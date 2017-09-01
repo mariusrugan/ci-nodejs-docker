@@ -1,0 +1,21 @@
+{
+  "@std": {
+    "esm": {
+      "esm": "js"
+    }
+  },
+  "dependencies": {
+    "@std/esm": "^0.5.1",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.2.1"
+  },
+  "scripts": {
+    "start": "node -r @std/esm src/index.js",
+    "dev": "nodemon --exec yarn start"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0",
+    "nodemon": "^1.11.0"
+  }
+}
