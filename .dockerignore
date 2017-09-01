@@ -1,4 +1,4 @@
-# node
+# node modules
 node_modules
 
 # application build folder
@@ -6,3 +6,6 @@ build
 
 # coverage folder
 coverage
+
+# git
+.gitignore

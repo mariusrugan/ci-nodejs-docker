@@ -1,21 +1,23 @@
 {
-  "@std": {
-    "esm": {
-      "esm": "js"
-    }
+  "scripts": {
+    "test": "jest --config test.json",
+    "clear": "rimraf build coverage && mkdir build",
+    "compile": "babel . --ignore node_modules,coverage,build -q -d build",
+    "pack": "yarn run clear && eslint . && yarn run compile",
+    "start": "yarn compile && node build/src/index.js",
+    "dev": "nodemon -L --ignore build --exec yarn start"
   },
   "dependencies": {
-    "@std/esm": "^0.5.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.2.1"
   },
-  "scripts": {
-    "start": "node -r @std/esm src/index.js",
-    "dev": "nodemon --exec yarn start"
-  },
   "devDependencies": {
-    "eslint": "^4.5.0",
-    "nodemon": "^1.11.0"
+    "babel-cli": "^6.26.0",
+    "eslint": "^4.6.0",
+    "jest": "^20.0.4",
+    "nodemon": "^1.11.0",
+    "rimraf": "^2.6.1"
   }
 }
