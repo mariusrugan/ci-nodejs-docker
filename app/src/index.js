@@ -2,7 +2,7 @@ import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 
-import Article from '../db'
+import Article from './db'
 
 const router = new Router()
 router.get('/', async ctx => {

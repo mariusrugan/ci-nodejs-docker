@@ -3,7 +3,7 @@ import bookshelf from 'bookshelf'
 
 import config from './config'
 
-var Bookshelf = bookshelf(knex(config))
+const Bookshelf = bookshelf(knex(config))
 
 class Article extends Bookshelf.Model {
   get tableName() {

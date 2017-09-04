@@ -4,14 +4,14 @@ MAINTAINER Francisco Berrocal <eu@chicocode.io>
 # Application working directory
 WORKDIR /app
 
-# Copy package dependency manifest
-COPY app/package.json app/yarn.lock ./
+# Copy package tooling files
+COPY app .
 
 # Run application dependency resolve
 RUN yarn install
 
 # INPUT: Source folder of application here (Compatible with nodemon live reload)
-VOLUME /app
+VOLUME /app/src
 
 # OUTPUT: Build artefacts are output here
 VOLUME /target

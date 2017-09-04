@@ -5,16 +5,15 @@
     "node": ">=8"
   },
   "scripts": {
-    "migrate": "knex migrate:latest --knexfile ./db/config.js",
+    "migrate": "knex migrate:latest --knexfile .src/db/config.js",
     "test": "jest --config test.json",
     "clear": "rimraf build coverage && mkdir build",
-    "compile": "babel . --ignore node_modules,coverage,build -q -d build",
+    "compile": "babel src --quiet --out-dir build",
     "pack": "yarn run clear && eslint . && yarn run compile",
-    "start": "yarn compile && node build/src/index.js",
-    "dev": "nodemon -L --ignore build --exec yarn start"
+    "start": "node build/src/index.js",
+    "dev": "babel-watch -L src/index.js"
   },
   "dependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "bookshelf": "^0.10.4",
     "knex": "^0.13.0",
     "koa": "^2.3.0",
@@ -24,6 +23,8 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-watch": "^2.0.7",
     "eslint": "^4.6.0",
     "jest": "^20.0.4",
     "nodemon": "^1.11.0",
