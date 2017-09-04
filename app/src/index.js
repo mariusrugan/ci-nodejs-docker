@@ -2,9 +2,11 @@ import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 
+import Article from '../db'
+
 const router = new Router()
-router.get('/', ctx => {
-  ctx.body = {hello: 'worlds'}
+router.get('/', async ctx => {
+  ctx.body = await Article.fetchAll()
 })
 
 const app = new Koa()

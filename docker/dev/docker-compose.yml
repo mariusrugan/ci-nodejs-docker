@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - ../../app:/app
+    ports:
+      - 8080:8080
+    links:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: nodejs-docker
+
+  db:
+    image: postgres
+    hostname: db
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: nodejs-docker
+
+  agent:
+    build:
+      context: ../ansible
+    links:
+      - db
+    environment:
+      SERVICE_HOST: db
+      SERVICE_PORT: 5432

@@ -2,24 +2,27 @@ FROM mhart/alpine-node
 MAINTAINER Francisco Berrocal <eu@chicocode.io>
 
 # Application working directory
-WORKDIR /application
+WORKDIR /app
 
 # Copy package dependency manifest
-COPY package.json yarn.lock ./
+COPY app/package.json app/yarn.lock ./
 
 # Run application dependency resolve
 RUN yarn install
 
-# Source folder of application as volume (Compatible with nodemon live reload)
-VOLUME ["src"]
+# INPUT: Source folder of application here (Compatible with nodemon live reload)
+VOLUME /app
 
-# Copy source application
-COPY src src
+# OUTPUT: Build artefacts are output here
+VOLUME /target
+
+# OUTPUT: Test reports are output here
+VOLUME /coverage
 
 # Expose application port
 EXPOSE 8080
 
 # Default running command
-CMD ["yarn", "test"]
+CMD ["yarn", "dev"]
 
 LABEL application=ci-nodejs-docker

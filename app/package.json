@@ -1,5 +1,11 @@
 {
+  "license": "MIT",
+  "engineStrict": true,
+  "engines": {
+    "node": ">=8"
+  },
   "scripts": {
+    "migrate": "knex migrate:latest --knexfile ./db/config.js",
     "test": "jest --config test.json",
     "clear": "rimraf build coverage && mkdir build",
     "compile": "babel . --ignore node_modules,coverage,build -q -d build",
@@ -9,9 +15,12 @@
   },
   "dependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "bookshelf": "^0.10.4",
+    "knex": "^0.13.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
-    "koa-router": "^7.2.1"
+    "koa-router": "^7.2.1",
+    "pg": "^7.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

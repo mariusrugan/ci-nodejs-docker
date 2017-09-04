@@ -1,0 +1,23 @@
+---
+- name: Wait for service
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+  - name: Set facts
+    set_fact:
+      service_host: "{{ lookup('env','SERVICE_HOST') }}"
+      service_port: "{{ lookup('env','SERVICE_PORT') }}"
+      delay: "{{ lookup('env','DELAY') | default(0, true) }}"
+      timeout: "{{ lookup('env','TIMEOUT') | default (180, true) }}"
+  - name: Message
+    debug: 
+      msg: >
+        Delaying {{ service_host }}:{{ service_port }} with delay={{ delay }}s
+        and timeout={{ timeout}}s
+  - name: Waiting for host to respond...
+    local_action: >
+      wait_for host={{ service_host }}
+      port={{ service_port }}
+      delay={{ delay }}
+      timeout={{ timeout }}
