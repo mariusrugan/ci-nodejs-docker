@@ -2,16 +2,18 @@ import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 
-import Article from './db'
+import articles from './articles/routes'
 
-const router = new Router()
-router.get('/', async ctx => {
-  ctx.body = await Article.fetchAll()
+const home = new Router()
+home.get('/', async ctx => {
+  ctx.body = '🔥🔥🔥 api up! let\'s hack! 🔥🔥🔥 \n'
+           + Array(4).join(' ') + Array(12).join('👾')
 })
 
 const app = new Koa()
   .use(bodyParser())
-  .use(router.routes())
+  .use(home.routes())
+  .use(articles.routes())
 
 let port = process.env.PORT || 8080
 app.listen(port, () => {
