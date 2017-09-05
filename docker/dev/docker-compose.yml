@@ -16,6 +16,7 @@ services:
     links:
       - db
     environment:
+      NODE_ENV: development
       POSTGRES_HOST: db
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_password
@@ -32,12 +33,3 @@ services:
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: db_articles
-
-  # agent:
-  #   build:
-  #     context: ../ansible
-  #   links:
-  #     - db
-  #   environment:
-  #     SERVICE_HOST: db
-  #     SERVICE_PORT: 5432

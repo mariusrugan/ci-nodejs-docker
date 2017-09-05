@@ -1,6 +1,9 @@
 FROM mhart/alpine-node
 MAINTAINER Francisco Berrocal <eu@chicocode.io>
 
+# extra tools support
+RUN apk add --no-cache make gcc g++ python
+
 # Application working directory
 WORKDIR /app
 

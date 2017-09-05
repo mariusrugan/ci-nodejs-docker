@@ -1,3 +1,4 @@
+// this should be commonjs module compatible (migration tooling compatible)
 module.exports =  {
   client: 'pg',
   connection: {

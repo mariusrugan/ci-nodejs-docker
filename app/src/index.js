@@ -1,8 +1,12 @@
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
+import PrettyError from 'pretty-error'
 
 import articles from './articles/routes'
+
+if (process.env.NODE_ENV === 'development')
+  PrettyError.start()
 
 const home = new Router()
 home.get('/', async ctx => {
