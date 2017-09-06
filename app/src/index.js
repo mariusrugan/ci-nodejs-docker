@@ -5,13 +5,11 @@ import PrettyError from 'pretty-error'
 
 import articles from './articles/routes'
 
-if (process.env.NODE_ENV === 'development')
-  PrettyError.start()
+if (process.env.NODE_ENV === 'development') PrettyError.start()
 
 const home = new Router()
 home.get('/', async ctx => {
-  ctx.body = '🔥🔥🔥 api up! let\'s hack! 🔥🔥🔥 \n'
-           + Array(4).join(' ') + Array(12).join('👾')
+  ctx.body = `🔥🔥🔥 api up! let's hack! 🔥🔥🔥 \n      ${Array(12).join('👾')}`;
 })
 
 const app = new Koa()
