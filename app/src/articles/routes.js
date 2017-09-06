@@ -11,7 +11,6 @@ export async function getArticles(ctx) {
 export async function getArticle(ctx) {
   const { id } = ctx.params
   let article = await Article.where({ id }).fetch()
-
   ctx.body = article
 }
 
@@ -23,7 +22,7 @@ export async function updateArticle(ctx) {
 
 export async function createArticle(ctx) {
   let info = Object.assign(ctx.request.body, { created_at: Date.now() })
-  let article = new Article(info)
+  let article = Article.forge(info)
   ctx.body = await article.save()
 }
 

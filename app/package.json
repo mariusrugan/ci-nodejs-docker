@@ -8,11 +8,11 @@
     "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
     "test": "jest --config test.json --forceExit",
     "clear": "rimraf build coverage && mkdir build",
-    "compile": "babel src --quiet --out-dir build",
+    "compile": "babel src --quiet --out-dir build --ignore '**/*.spec.js'",
     "pack": "yarn run clear && eslint . && yarn run compile",
-    "format": "prettier-eslint \"src/**/*.js\"",
+    "format": "prettier-eslint 'src/**/*.js'",
     "start": "node build/src/index.js",
-    "dev": "babel-watch -L src/index.js"
+    "dev": "babel-watch -L src/index.js --ignore '**/*.spec.js'"
   },
   "dependencies": {
     "bookshelf": "^0.10.4",

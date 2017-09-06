@@ -5,7 +5,7 @@ import PrettyError from 'pretty-error'
 
 import articles from './articles/routes'
 
-if (process.env.NODE_ENV === 'development') PrettyError.start()
+if (process.env.NODE_ENV !== 'production') PrettyError.start()
 
 const home = new Router()
 home.get('/', async ctx => {

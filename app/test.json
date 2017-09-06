@@ -1,5 +1,6 @@
 {
-   "collectCoverage":true,
+   "testEnvironment": "node",
+   "collectCoverage": true,
    "coverageThreshold":{
       "global":{
          "branches":85,
