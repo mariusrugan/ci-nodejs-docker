@@ -7,7 +7,7 @@ export default schema => async (ctx, next) => {
     ctx.status = 400
     ctx.body = {
       info: 'Invalid input',
-      details: error.details,
+      details: error.details
     }
     return
   }

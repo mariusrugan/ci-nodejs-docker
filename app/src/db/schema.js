@@ -24,7 +24,7 @@ export default function(bookshelf) {
 
     validateCreate: function() {
       var schema = this.schema.create.options({
-        noDefaults: true,
+        noDefaults: true
       })
       this.validate(schema)
     },
@@ -32,6 +32,6 @@ export default function(bookshelf) {
     validateUpdate(model, attrs) {
       var schema = this.schema.update
       this.validate(schema, attrs)
-    },
+    }
   })
 }

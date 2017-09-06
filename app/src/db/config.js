@@ -6,6 +6,6 @@ module.exports = {
     host: process.env.POSTGRES_HOST || 'localhost',
     user: process.env.POSTGRES_USER || 'root',
     password: process.env.POSTGRES_PASSWORD || 'password',
-    charset: 'utf8',
-  },
+    charset: 'utf8'
+  }
 }

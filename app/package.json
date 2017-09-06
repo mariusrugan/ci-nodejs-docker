@@ -6,7 +6,7 @@
   },
   "scripts": {
     "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
-    "test": "jest --config test.json",
+    "test": "jest --config test.json --forceExit",
     "clear": "rimraf build coverage && mkdir build",
     "compile": "babel src --quiet --out-dir build",
     "pack": "yarn run clear && eslint . && yarn run compile",

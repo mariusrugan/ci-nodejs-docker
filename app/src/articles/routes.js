@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import validate from '../http/schema_middleware'
+import validate from '../http/validate_schema'
 
 import Article, { schema } from './Article'
 

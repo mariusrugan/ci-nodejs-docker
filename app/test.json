@@ -9,7 +9,8 @@
       }
    },
    "collectCoverageFrom":[
-      "**/*.js",
+      "**/{routes|service}.js",
+      "src/http/**/*.js",
       "!build/**/*.js",
       "!coverage/**/*.js"
    ],
