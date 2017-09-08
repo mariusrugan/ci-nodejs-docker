@@ -33,3 +33,12 @@ services:
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: db_articles
+
+  agent:
+     build:
+       context: ../ansible
+     links:
+       - db
+     environment:
+       SERVICE_HOST: db
+       SERVICE_PORT: 5432 

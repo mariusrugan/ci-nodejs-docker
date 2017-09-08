@@ -5,14 +5,16 @@
     "node": ">=8"
   },
   "scripts": {
-    "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
-    "test": "jest --config test.json --forceExit",
     "clear": "rimraf build coverage && mkdir build",
-    "compile": "babel src --quiet --out-dir build --ignore '**/*.spec.js'",
-    "pack": "yarn run clear && eslint . && yarn run compile",
-    "format": "prettier-eslint 'src/**/*.js'",
-    "start": "node build/src/index.js",
-    "dev": "babel-watch -L src/index.js --ignore '**/*.spec.js'"
+    "compile": "eslint . && babel src --quiet --out-dir build --ignore '**/*.spec.js'",
+    "format": "prettier-eslint \"src/**/*.js\"",
+    "test": "jest --config test.json --forceExit",
+    "test:watch": "yarn test -- --watch --collectCoverage false",
+    "test:integration": "yarn test -- --collectCoverage false src/__TESTS__",
+    "test:unit": "yarn test -- --testPathIgnorePatterns src/__TESTS__",
+    "dev": "babel-watch -L src/index.js --ignore '**/*.spec.js'",
+    "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
+    "start": "node build/src/index.js"
   },
   "dependencies": {
     "bookshelf": "^0.10.4",
@@ -26,6 +28,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-watch": "^2.0.7",
     "eslint": "^4.6.0",
     "eslint-plugin-prettier": "^2.2.0",
