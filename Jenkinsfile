@@ -1,9 +1,9 @@
 pipeline {
-    agent { docker 'node:latest' }
-    stages {
-        stage('build') {
+    agent any
+    stages { 
+        stage('Test') {
             steps {
-                sh 'npm --version'
+                sh 'docker-compose -f docker/dev/docker-compose.yml pull'
             }
         }
     }
