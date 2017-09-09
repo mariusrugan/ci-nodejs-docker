@@ -14,16 +14,7 @@ pipeline {
     }
     stage('Test') {
       steps {
-        parallel(
-          "Test Unit": {
-            sh 'docker-compose -f docker/dev/docker-compose.yml run --rm app yarn test:unit'
-            
-          },
-          "Test Integration": {
-            sh 'docker-compose -f docker/dev/docker-compose.yml run --rm app yarn test:integration'
-            
-          }
-        )
+        sh 'docker-compose -f docker/dev/docker-compose.yml run app yarn test:integration'
       }
     }
   }
