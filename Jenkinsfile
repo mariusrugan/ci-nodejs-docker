@@ -16,11 +16,11 @@ pipeline {
       steps {
         parallel(
           "Test Unit": {
-            sh 'docker-compose run --rm app yarn test:unit'
+            sh 'docker-compose run -f docker/dev/docker-compose.yml --rm app yarn test:unit'
             
           },
           "Test Integration": {
-            sh 'docker-compose run --rm app yarn test:integration'
+            sh 'docker-compose run -f docker/dev/docker-compose.yml --rm app yarn test:integration'
             
           }
         )
