@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages { 
-        stage('Test') {
+        stages {
             stage('Prepare docker images') {
                 steps {
                     sh 'docker-compose -f docker/dev/docker-compose.yml pull'
