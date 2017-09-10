@@ -9,8 +9,6 @@ services:
     build:
       context: ../../
       dockerfile: docker/dev/Dockerfile
-    volumes:
-      - ../../app/src:/app/src
     ports:
       - 8080:8080
     links:
