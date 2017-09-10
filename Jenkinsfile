@@ -25,6 +25,8 @@ pipeline {
           }
         )
       }
+    }
+    stage('Publish test') {
       steps {
         junit './*.xml'
       }
