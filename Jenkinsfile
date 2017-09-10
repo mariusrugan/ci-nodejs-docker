@@ -25,6 +25,9 @@ pipeline {
           }
         )
       }
+      steps {
+        junit './*.xml'
+      }
     }
   }
   post {
