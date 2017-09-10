@@ -16,7 +16,8 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-integration-tests app yarn test:integration'            
+            sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-integration-tests app yarn test:integration -- --testResultsProcessor="jest-junit"'
+            sh 'docker cp $$(docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml ps -q app-integration-tests):/app/src/junit.xml .'
           },
           "Unit tests": {
             sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-unit-tests app yarn test:unit'
