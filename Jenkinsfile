@@ -16,11 +16,11 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-integration-tests app yarn test:integration -- --testResultsProcessor="jest-junit"'
+            sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-integration-tests app yarn test:integration -- --testResultsProcessor jest-junit'
             sh 'docker cp app-integration-tests:/app/junit.xml ./integration-tests.junit.xml'
           },
           "Unit tests": {
-            sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-unit-tests app yarn test:unit'
+            sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-unit-tests app yarn test:unit -- --testResultsProcessor jest-junit'
             sh 'docker cp app-unit-tests:/app/junit.xml ./unit-tests.junit.xml'
           }
         )
