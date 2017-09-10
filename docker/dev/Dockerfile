@@ -14,7 +14,7 @@ COPY app .
 RUN yarn install
 
 # INPUT: Source folder of application here (Compatible with nodemon live reload)
-VOLUME /app/src
+#VOLUME /app/src
 
 # OUTPUT: Build artefacts are output here
 VOLUME /target
