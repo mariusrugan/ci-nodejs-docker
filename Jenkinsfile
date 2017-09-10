@@ -28,7 +28,7 @@ pipeline {
     }
     stage('Publish test') {
       steps {
-        junit './*.xml'
+        junit '*.junit.xml'
       }
     }
   }
