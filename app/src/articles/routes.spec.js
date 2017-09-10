@@ -27,7 +27,7 @@ describe('Articles routes', () => {
     let ctx = { params: { id: 1 } }
     await getArticle(ctx)
     expect(ctx.body).toEqual({ article: 'article' })
-    expect(Article.where).toBeCalledWith({ id: ctx.params.id })
+    expect(Article.where).toBeCalledWith({ id: 2 })
   })
 
   it('updateArticle should call save with correct article props', async () => {
