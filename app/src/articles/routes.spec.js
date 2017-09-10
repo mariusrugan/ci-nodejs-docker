@@ -19,7 +19,7 @@ describe('Articles routes', () => {
   it('getArticles should fetchAll', async () => {
     let ctx = {}
     await getArticles(ctx)
-    expect(ctx.body).toEqual(['something'])
+    expect(ctx.body).toEqual([one])
     expect(Article.fetchAll).toBeCalled()
   })
 
@@ -27,7 +27,7 @@ describe('Articles routes', () => {
     let ctx = { params: { id: 1 } }
     await getArticle(ctx)
     expect(ctx.body).toEqual({ article: 'article' })
-    expect(Article.where).toBeCalledWith({ id: 2 })
+    expect(Article.where).toBeCalledWith({ id: ctx.params.id })
   })
 
   it('updateArticle should call save with correct article props', async () => {
