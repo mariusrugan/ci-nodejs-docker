@@ -20,7 +20,7 @@ pipeline {
             
           },
           "Unit tests": {
-            sh 'docker-compose -f docker/dev/docker-compose.yml run app-unit-tests app yarn test:unit'
+            sh 'docker-compose -f docker/dev/docker-compose.yml run --name app-unit-tests app yarn test:unit'
             
           }
         )
