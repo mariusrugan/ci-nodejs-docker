@@ -24,6 +24,7 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --rm app migrate'
             sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
           },
           "Unit tests": {
