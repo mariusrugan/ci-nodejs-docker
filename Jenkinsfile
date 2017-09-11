@@ -53,7 +53,7 @@ pipeline {
         APP = "app-${BUILD_ID}"
       }
       steps {
-        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${APP} yarn compile'
+        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${APP} app yarn compile'
         sh 'docker cp ${APP}:/app/build ./artifact'
       }
     }
