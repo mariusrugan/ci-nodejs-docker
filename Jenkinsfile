@@ -55,6 +55,7 @@ pipeline {
       steps {
         sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${APP} app yarn compile'
         sh 'docker cp ${APP}:/app/build ./build'
+        sh 'cp package.json yarn.lock build'
         archiveArtifacts artifacts: 'build/**/*', fingerprint: true
       }
     }

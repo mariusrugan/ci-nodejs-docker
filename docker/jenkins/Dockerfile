@@ -31,5 +31,7 @@ RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 # Add jenkins user to docker group to enable docker cli for Jenkins
 RUN addgroup --system docker && adduser jenkins docker && newgrp docker
 
+ENV JAVA_OPTS -Dhudson.model.DirectoryBrowserSupport.CSP=""
+
 # Change back to jenkins user
 USER jenkins
