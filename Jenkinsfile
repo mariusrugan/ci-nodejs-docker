@@ -20,6 +20,15 @@ pipeline {
           },
           "Unit tests": {
             sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml run --no-deps --name app-unit-tests app yarn test:unit -- --testResultsProcessor jest-junit'
+            sh 'docker cp app-unit-tests:/app/coverage/lcov-report ./coverage'
+            publishHTML (target: [
+              allowMissing: false,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: 'coverage',
+              reportFiles: 'index.html',
+              reportName: "Istanbul coverage report"
+            ])
           }
         )
      }
