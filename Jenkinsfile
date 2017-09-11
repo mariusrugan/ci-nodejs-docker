@@ -23,8 +23,8 @@ pipeline {
             sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name app-integration-tests-${BUILD_ID} app yarn test:integration -- --testResultsProcessor jest-junit'
           },
           "Unit tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name app-unit-tests--${BUILD_ID} app yarn test:unit -- --testResultsProcessor jest-junit'
-            sh 'docker cp app-unit-tests:/app/coverage/lcov-report ./coverage'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name app-unit-tests-${BUILD_ID} app yarn test:unit -- --testResultsProcessor jest-junit'
+            sh 'docker cp app-unit-tests-${BUILD_ID}:/app/coverage/lcov-report ./coverage'
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
