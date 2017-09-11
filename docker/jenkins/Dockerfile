@@ -9,11 +9,8 @@ ARG DOCKER=17.06.2-ce
 ARG DOCKER_COMPOSE=1.16.1
 
 # Install docker
-RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER:-17.06.2-ce}.tgz &&	 \
-	tar --strip-components=1 -xvzf docker-${DOCKER:-17.06.2-ce}.tgz -C /usr/local/bin
-
-# Enable docker sock to jenkins user
-RUN echo "if [ -e /var/run/docker.sock ]; then sudo chown jenkins:jenkins /var/run/docker.sock; fi" >> /var/jenkins_home/.bashrc
+RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER:-17.06.2-ce}.tgz && \
+ tar --strip-components=1 -xvzf docker-${DOCKER:-17.06.2-ce}.tgz -C /usr/local/bin
 
 # Install docker compose
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE:-1.16.1}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
@@ -30,6 +27,9 @@ RUN dos2unix /usr/share/jenkins/ref/plugins.txt && apt-get --purge remove -y dos
 
 # Install jenkins plugins
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+
+# Add jenkins user to docker group to enable docker cli for Jenkins
+RUN addgroup --system docker && adduser jenkins docker && newgrp docker
 
 # Change back to jenkins user
 USER jenkins

@@ -55,12 +55,12 @@ pipeline {
       steps {
         sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${APP} app yarn compile'
         sh 'docker cp ${APP}:/app/build ./build'
-        archiveArtifacts artifacts: 'build', fingerprint: true
+        archiveArtifacts artifacts: 'build/**/*', fingerprint: true
       }
     }
   }
   post {
-      always { 
+      always {
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop'
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v'
           sh 'docker images -q -f dangling=true -f label=application=ci-nodejs-docker | xargs -I ARGS docker rmi -f ARGS'
