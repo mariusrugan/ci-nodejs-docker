@@ -1,9 +1,13 @@
 pipeline {
   agent any
+  environment {
+    PROJECT_NAME = "ci_nodejs_${BUILD_ID}"
+    COMPOSE_FILE = "docker/dev/docker-compose.yml"
+  }
   stages {
     stage('Prepare docker images') {
       steps {
-        sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml pull'
+        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} pull'
         sh 'docker-compose -p ci-nodejs-${BUILD_ID} -f docker/dev/docker-compose.yml build --pull'
       }
     }
