@@ -17,29 +17,33 @@ pipeline {
       }
     }
     stage('Test') {
+      environment {
+        INTEGRATION_APP = "app-integration-tests-${BUILD_ID}"
+        UNIT_APP = "app-unit-tests-${BUILD_ID}"
+      }
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name app-integration-tests-${BUILD_ID} app yarn test:integration -- --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
           },
           "Unit tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name app-unit-tests-${BUILD_ID} app yarn test:unit -- --testResultsProcessor jest-junit'
-            sh 'docker cp app-unit-tests-${BUILD_ID}:/app/coverage/lcov-report ./coverage'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${UNIT_APP} app yarn test:unit -- --testResultsProcessor jest-junit'
+            sh 'docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage'
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
               keepAll: true,
               reportDir: 'coverage',
               reportFiles: 'index.html',
-              reportName: "Istanbul coverage report"
+              reportName: "Istanbul Coverage Report"
             ])
           }
         )
      }
      post {
         always {
-          sh 'docker cp app-integration-tests-${BUILD_ID}:/app/junit.xml ./integration-tests.junit.xml'
-          sh 'docker cp app-unit-tests-${BUILD_ID}:/app/junit.xml ./unit-tests.junit.xml'
+          sh 'docker cp ${INTEGRATION_APP}:/app/junit.xml ./integration-tests.junit.xml'
+          sh 'docker cp ${UNIT_APP}:/app/junit.xml ./unit-tests.junit.xml'
           junit '*.junit.xml'
         }
       }
