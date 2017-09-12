@@ -11,7 +11,7 @@ WORKDIR /app
 COPY app/package.json app/yarn.lock docker/dev/wait-for ./
 
 # Run application dependency resolve
-RUN yarn install
+RUN yarn install && chmod +x ./wait-for
 
 # Expose application port
 EXPOSE 8080
