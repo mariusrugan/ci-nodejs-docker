@@ -39,6 +39,7 @@ pipeline {
           sh 'docker cp ${INTEGRATION_APP}:/app/junit.xml ./integration-tests.junit.xml'
           sh 'docker cp ${UNIT_APP}:/app/junit.xml ./unit-tests.junit.xml'
           junit '*.junit.xml'
+          sh 'docker rm ${UNIT_APP}'
         }
       }
     }
