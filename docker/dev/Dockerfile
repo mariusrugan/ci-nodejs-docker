@@ -7,11 +7,14 @@ RUN apk add --no-cache make gcc g++ python
 # Application working directory
 WORKDIR /app
 
-# Copy package tooling files
-COPY app .
+# Copy package manifest
+COPY app/package.json app/yarn.lock ./
 
 # Run application dependency resolve
 RUN yarn install
+
+# Copy application
+COPY app .
 
 # Expose application port
 EXPOSE 8080
