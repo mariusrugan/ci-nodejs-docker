@@ -19,7 +19,7 @@ describe('Articles routes', () => {
   it('getArticles should fetchAll', async () => {
     let ctx = {}
     await getArticles(ctx)
-    expect(ctx.body).toEqual([])
+    expect(ctx.body).toEqual(['gabi'])
     expect(Article.fetchAll).toBeCalled()
   })
 
