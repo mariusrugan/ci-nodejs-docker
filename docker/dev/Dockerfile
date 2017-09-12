@@ -7,17 +7,20 @@ RUN apk add --no-cache make gcc g++ python
 # Application working directory
 WORKDIR /app
 
-# Copy package manifest
-COPY app/package.json app/yarn.lock ./
+# Copy package manifest & wait-for script
+COPY app/package.json app/yarn.lock docker/dev/wait-for ./
 
 # Run application dependency resolve
 RUN yarn install
 
+# Expose application port
+EXPOSE 8080
+
 # Copy application
 COPY app .
 
-# Expose application port
-EXPOSE 8080
+# Set entrypoint to wait for
+ENTRYPOINT ["./wait-for", "db:5432", "--"]
 
 # Default running command
 CMD ["yarn", "dev"]

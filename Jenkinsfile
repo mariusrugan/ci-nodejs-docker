@@ -5,15 +5,9 @@ pipeline {
     COMPOSE_FILE = "docker/dev/docker-compose.yml"
   }
   stages {
-    stage('Prepare docker images') {
+    stage('Pull images') {
       steps {
-        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} pull'
         sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} build --pull'
-      }
-    }
-    stage('Ensure database is up & running') {
-      steps {
-        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --rm agent'
       }
     }
     stage('Test') {
@@ -24,11 +18,10 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --rm app yarn migrate'
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
           },
           "Unit tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${UNIT_APP} app yarn test:unit -- --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --entrypoint yarn --no-deps --name ${UNIT_APP} app test:unit -- --testResultsProcessor jest-junit'
             sh 'docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage'
             publishHTML (target: [
               allowMissing: false,
