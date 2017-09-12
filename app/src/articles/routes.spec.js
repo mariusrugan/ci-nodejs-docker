@@ -15,7 +15,7 @@ import {
   createArticle
 } from './routes'
 
-describe('Articles routes', () => {
+describe('Articles route', () => {
   it('getArticles should fetchAll', async () => {
     let ctx = {}
     await getArticles(ctx)
