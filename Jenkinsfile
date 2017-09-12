@@ -21,7 +21,7 @@ pipeline {
             sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
           },
           "Unit tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --entrypoint yarn --no-deps --name ${UNIT_APP} app test:unit -- --testResultsProcessor jest-junit'
+            sh 'docker run -t --entrypoint yarn --name ${UNIT_APP} cinodejs${BUILD_ID}_app test:unit -- --testResultsProcessor jest-junit'
             sh 'docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage'
             publishHTML (target: [
               allowMissing: false,
