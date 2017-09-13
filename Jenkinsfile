@@ -5,8 +5,9 @@ pipeline {
     COMPOSE_FILE = "docker/dev/docker-compose.yml"
   }
   stages {
-    stage('Pull images') {
+    stage('Pull & Build Images') {
       steps {
+        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} pull'
         sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} build --pull'
       }
     }
@@ -43,7 +44,7 @@ pipeline {
         }
       }
     }
-    stage('Generate artifacts') {
+    stage('Generate Artifacts') {
       environment {
         APP = "app-${BUILD_ID}"
       }
@@ -61,6 +62,7 @@ pipeline {
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop'
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v'
           sh 'docker images -q -f dangling=true -f label=application=ci-nodejs-docker | xargs -I ARGS docker rmi -f ARGS'
+          sh 'docker rmi cinodejs${BUILD_ID}_app'
           sh 'docker network ls --filter name=${BUILD_ID}_default -q | xargs docker network rm'
       }
   }
