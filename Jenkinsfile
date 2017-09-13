@@ -7,8 +7,7 @@ pipeline {
   stages {
     stage('Pull & Build Images') {
       steps {
-        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} pull'
-        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} build --pull'
+        sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
       }
     }
     stage('Test') {
