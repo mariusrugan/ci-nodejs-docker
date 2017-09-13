@@ -19,7 +19,7 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run -u root --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
           },
           "Unit tests": {
             sh 'docker run -t --entrypoint yarn --name ${UNIT_APP} cinodejs${BUILD_ID}_app test:unit -- --testResultsProcessor jest-junit'
