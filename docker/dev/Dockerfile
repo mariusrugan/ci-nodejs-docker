@@ -1,13 +1,14 @@
 FROM mhart/alpine-node
 MAINTAINER Francisco Berrocal <eu@chicocode.io>
 
-COPY docker/dev/wait-for ./
+LABEL application=ci-nodejs-docker
 
+COPY docker/dev/wait-for ./
 RUN chmod +x ./wait-for
 
 WORKDIR /app
 
-COPY app/package.json app/yarn.lock docker/dev/wait-for ./
+COPY app/package.json app/yarn.lock ./
 
 RUN yarn install
 
@@ -17,4 +18,3 @@ ENTRYPOINT ["./wait-for", "db:5432", "--"]
 
 CMD ["yarn", "dev"]
 
-LABEL application=ci-nodejs-docker
