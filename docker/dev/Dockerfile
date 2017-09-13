@@ -3,7 +3,7 @@ MAINTAINER Francisco Berrocal <eu@chicocode.io>
 
 COPY docker/dev/wait-for ./
 
-RUN chmod +x ./wait-for
+RUN chmod +x ./wait-for & chmod 775 ./wait-for
 
 WORKDIR /app
 
