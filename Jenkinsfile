@@ -18,10 +18,10 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run -u root --name ${INTEGRATION_APP} app yarn test:integration -- --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run -u root --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
           },
           "Unit tests": {
-            sh 'docker run --entrypoint yarn --name ${UNIT_APP} chicocode/ci-nodejs-docker test:unit -- --testResultsProcessor jest-junit'
+            sh 'docker run --entrypoint yarn --name ${UNIT_APP} chicocode/ci-nodejs-docker test:unit --testResultsProcessor jest-junit'
             sh 'docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage'
             publishHTML (target: [
               allowMissing: false,
