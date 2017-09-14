@@ -48,7 +48,7 @@ pipeline {
         APP = "app-${BUILD_ID}"
       }
       steps {
-        sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --no-deps --name ${APP} app yarn compile'
+        sh 'docker run --entrypoint yarn --name ${APP} chicocode/ci-nodejs-docker compile'
         sh 'docker cp ${APP}:/app/build ./build'
         sh 'cp app/package.json app/yarn.lock build'
         sh 'tar -cvzf build.tar.gz build'
