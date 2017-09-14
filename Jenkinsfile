@@ -61,6 +61,19 @@ pipeline {
       }
     }
   }
+  stage('Deploy') {
+    agent none
+    steps {
+      script {
+        version = sh(returnStdout: true, script: 'cat app/package.json | grep version | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'')
+        timeout(time: 15, unit: 'SECONDS') {
+          env.new_version = input message: 'Bump version (current version: ' + version + ')',
+            parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
+        }
+        sh '(cd app && docker run --rm mhart/alpine-node yarn version ${new_version})'
+      }
+    }
+  }
   post {
       always {
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop'
