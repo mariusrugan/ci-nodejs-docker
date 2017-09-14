@@ -5,6 +5,7 @@ services:
     build:
       context: ../../
       dockerfile: docker/dev/Dockerfile
+    image: chicocode/ci-nodejs-docker
     ports:
       - 8081:8080
     links:
