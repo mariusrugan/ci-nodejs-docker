@@ -60,9 +60,7 @@ pipeline {
       always {
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop'
           sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v'
-          sh 'docker images -q -f dangling=true -f label=application=ci-nodejs-docker | xargs -I ARGS docker rmi -f ARGS'
-          sh 'docker rmi cinodejs${BUILD_ID}_app'
-          sh 'docker network ls --filter name=${BUILD_ID}_default -q | xargs docker network rm'
+          sh 'docker network ls --filter name=${BUILD_ID}_default -q | xargs -I ARGS docker network rm ARGS'
       }
   }
 }
