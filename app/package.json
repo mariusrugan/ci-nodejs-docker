@@ -9,9 +9,9 @@
     "compile": "eslint . && babel src --quiet --out-dir build --ignore '**/*.spec.js'",
     "format": "prettier-eslint \"src/**/*.js\"",
     "test": "jest --config test.json --forceExit",
-    "test:watch": "yarn test -- --watch --collectCoverage false",
-    "test:integration": "yarn migrate && yarn test -- --collectCoverage false src/__TESTS__",
-    "test:unit": "yarn test -- --testPathIgnorePatterns src/__TESTS__",
+    "test:watch": "yarn test --watch --collectCoverage false",
+    "test:integration": "yarn migrate && yarn test --collectCoverage false src/__TESTS__",
+    "test:unit": "yarn test --testPathIgnorePatterns src/__TESTS__",
     "dev": "yarn compile && babel-watch -L src/index.js --ignore '**/*.spec.js'",
     "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
     "start": "node build/src/index.js"
