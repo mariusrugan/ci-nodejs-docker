@@ -54,6 +54,11 @@ pipeline {
         sh 'tar -cvzf build.tar.gz build'
         archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
       }
+      post {
+          always {
+              sh 'docker rm ${APP}'
+          }
+      }
     }
   }
   post {
