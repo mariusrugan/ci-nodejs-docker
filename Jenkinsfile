@@ -52,6 +52,9 @@ pipeline {
       environment {
         APP = "app-${BUILD_ID}"
       }
+      when {
+        branch 'release'
+      }
       steps {
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | grep version | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'')
