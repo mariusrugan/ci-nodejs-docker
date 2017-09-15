@@ -21,8 +21,10 @@ pipeline {
             sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run -u root --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
           },
           "Unit tests": {
-            sh 'docker run --entrypoint yarn --name ${UNIT_APP} chicocode/ci-nodejs-docker test:unit --testResultsProcessor jest-junit'
-            sh 'docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage'
+            sh '''
+               docker run --entrypoint yarn --name ${UNIT_APP} chicocode/ci-nodejs-docker test:unit --testResultsProcessor jest-junit
+               docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage
+            '''
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
@@ -36,8 +38,10 @@ pipeline {
      }
      post {
         always {
-          sh 'docker cp ${INTEGRATION_APP}:/app/junit.xml ./integration-tests.junit.xml'
-          sh 'docker cp ${UNIT_APP}:/app/junit.xml ./unit-tests.junit.xml'
+          sh '''
+             docker cp ${INTEGRATION_APP}:/app/junit.xml ./integration-tests.junit.xml
+             docker cp ${UNIT_APP}:/app/junit.xml ./unit-tests.junit.xml
+          '''
           junit '*.junit.xml'
           sh 'docker rm ${UNIT_APP}'
         }
@@ -55,11 +59,13 @@ pipeline {
             env.new_version = input message: 'Bump version (current version: ' + version + ')',
               parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
           }
-          sh 'docker run --entrypoint sh --name ${APP} chicocode/ci-nodejs-docker -c "yarn version --new-version ${new_version} && yarn compile"'
-          sh 'docker cp ${APP}:app/package.json ./build'
-          sh 'docker cp ${APP}:app/yarn.lock ./build'
-          sh 'docker cp ${APP}:app/build ./build'
-          sh 'tar -cvzf build.tar.gz build'
+          sh '''
+              docker run --entrypoint sh --name ${APP} chicocode/ci-nodejs-docker -c "yarn version --new-version ${new_version} && yarn compile"
+              docker cp ${APP}:app/package.json ./build
+              docker cp ${APP}:app/yarn.lock ./build
+              docker cp ${APP}:app/build ./build
+              tar -cvzf build.tar.gz build
+          '''
           archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
         }
       }
@@ -72,9 +78,11 @@ pipeline {
   }
   post {
       always {
-          sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop'
-          sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v'
-          sh 'docker network ls --filter name=${BUILD_ID}_default -q | xargs -I ARGS docker network rm ARGS'
+          sh '''
+             docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop
+             docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v
+             docker network ls --filter name=${BUILD_ID}_default -q | xargs -I ARGS docker network rm ARGS
+          '''
       }
   }
 }
