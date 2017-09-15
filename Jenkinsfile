@@ -43,25 +43,11 @@ pipeline {
         }
       }
     }
-    stage('Generate Artifacts') {
+    stage('Deploy') {
+      agent none
       environment {
         APP = "app-${BUILD_ID}"
       }
-      steps {
-        sh 'docker run --entrypoint yarn --name ${APP} chicocode/ci-nodejs-docker compile'
-        sh 'docker cp ${APP}:/app/build ./build'
-        sh 'cp app/package.json app/yarn.lock build'
-        sh 'tar -cvzf build.tar.gz build'
-        archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
-      }
-      post {
-          always {
-              sh 'docker rm ${APP}'
-          }
-      }
-    }
-    stage('Deploy') {
-      agent none
       steps {
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | grep version | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'')
@@ -69,8 +55,19 @@ pipeline {
             env.new_version = input message: 'Bump version (current version: ' + version + ')',
               parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
           }
-          sh '(cd app && docker run --rm mhart/alpine-node yarn version ${new_version})'
+          sh 'docker run --entrypoint yarn --name ${APP} chicocode/ci-nodejs-docker version --new-version ${new_version}'
+          sh 'docker exec --entrypoint yarn ${APP} compile'
+          sh 'docker cp ${APP}:/package.json ./build'
+          sh 'docker cp ${APP}:/yarn.lock ./build'
+          sh 'docker cp ${APP}:/app/build ./build'
+          sh 'tar -cvzf build.tar.gz build'
+          archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
         }
+      }
+      post {
+          always {
+              sh 'docker rm ${APP}'
+          }
       }
     }
   }
