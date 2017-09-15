@@ -55,8 +55,7 @@ pipeline {
             env.new_version = input message: 'Bump version (current version: ' + version + ')',
               parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
           }
-          sh 'docker run --entrypoint yarn --name ${APP} chicocode/ci-nodejs-docker version --new-version ${new_version}'
-          sh 'docker exec --entrypoint yarn ${APP} compile'
+          sh 'docker run --entrypoint sh --name ${APP} chicocode/ci-nodejs-docker -c \'yarn version --new-version ${new_version} && yarn compile\''
           sh 'docker cp ${APP}:/package.json ./build'
           sh 'docker cp ${APP}:/yarn.lock ./build'
           sh 'docker cp ${APP}:/app/build ./build'
