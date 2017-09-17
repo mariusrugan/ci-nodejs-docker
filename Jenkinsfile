@@ -64,6 +64,7 @@ pipeline {
           }
           sh '''
               docker run --entrypoint sh --name ${APP} chicocode/ci-nodejs-docker -c "yarn version --new-version ${new_version} && yarn compile"
+              mkdir artifactory
               docker cp ${APP}:app/package.json ./artifactory
               docker cp ${APP}:app/yarn.lock ./artifactory
               docker cp ${APP}:app/build ./artifactory
