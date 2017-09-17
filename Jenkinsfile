@@ -67,7 +67,7 @@ pipeline {
               docker cp ${APP}:app/package.json ./artifactory
               docker cp ${APP}:app/yarn.lock ./artifactory
               docker cp ${APP}:app/build ./artifactory
-              tar -cvzf build.tar.gz artifactory
+              tar -cvzf artifactory.tar.gz artifactory
           '''
           archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
         }
