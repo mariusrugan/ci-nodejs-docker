@@ -3,7 +3,7 @@ MAINTAINER Francisco Berrocal <eu@chicocode.io>
 
 WORKDIR /application
 
-COPY artifactory/package.json artifactory/yarn.lock ./
+COPY package/package.json package/yarn.lock ./
 
 RUN yarn install --production
 
@@ -16,7 +16,7 @@ WORKDIR /application
 
 COPY --from=dependency /application .
 
-COPY artifactory .
+COPY package .
 
 EXPOSE 8080
 
