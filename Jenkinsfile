@@ -64,9 +64,9 @@ pipeline {
           }
           sh '''
               docker run --entrypoint sh --name ${APP} chicocode/ci-nodejs-docker -c "yarn version --new-version ${new_version} && yarn compile"
-              docker cp ${APP}:app/package.json ./package
-              docker cp ${APP}:app/yarn.lock ./package
               docker cp ${APP}:app/build ./package
+              docker cp ${APP}:app/package.json ./package/package.json
+              docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               tar -cvzf package.tar.gz package
           '''
           archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
