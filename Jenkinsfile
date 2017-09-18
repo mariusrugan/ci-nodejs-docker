@@ -70,9 +70,9 @@ pipeline {
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
           '''
-        }
-        docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
+          docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
             
+          }
         }
       }
       post {
