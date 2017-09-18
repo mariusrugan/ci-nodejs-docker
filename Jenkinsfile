@@ -5,6 +5,7 @@ pipeline {
     COMPOSE_FILE = "docker/dev/docker-compose.yml"
     DEV_IMAGE = "chicocode/articles_app:dev"
     REL_IMAGE = "chicocode/articles_app"
+    DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
   }
   stages {
     stage('Pull & Build Images') {
@@ -69,7 +70,11 @@ pipeline {
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
-              docker build -t ${REL_IMAGE} -f docker/release/Dockerfile .
+              rel = docker.build(${REL_IMAGE}, "-f docker/release/Dockerfile .")
+
+              docker.withRegistry(${DOCKER_DISTRIBUTION}, 'docker-hub-credentials') {
+                  rel.push("latest")
+              }
           '''
         }
       }
