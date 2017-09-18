@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    PROJECT_NAME = "article_app_${BUILD_ID}"
+    PROJECT_NAME = "article_app_${BUILD_TAG}"
     COMPOSE_FILE = "docker/dev/docker-compose.yml"
     DEV_IMAGE = "chicocode/articles_app:dev"
     REL_IMAGE = "chicocode/articles_app"
@@ -14,8 +14,8 @@ pipeline {
     }
     stage('Test') {
       environment {
-        INTEGRATION_APP = "app-integration-tests-${BUILD_ID}"
-        UNIT_APP = "app-unit-tests-${BUILD_ID}"
+        INTEGRATION_APP = "app-integration-tests-${BUILD_TAG}"
+        UNIT_APP = "app-unit-tests-${BUILD_TAG}"
       }
       steps {
         parallel(
@@ -52,7 +52,7 @@ pipeline {
     stage('Deploy') {
       agent none
       environment {
-        APP = "app-${BUILD_ID}"
+        APP = "app-${BUILD_TAG}"
       }
       when {
         branch 'release'
@@ -85,7 +85,7 @@ pipeline {
           sh '''
              docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop
              docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v
-             docker network ls --filter name=${BUILD_ID}_default -q | xargs -I ARGS docker network rm ARGS
+             docker network ls --filter name=${BUILD_TAG}_default -q | xargs -I ARGS docker network rm ARGS
           '''
       }
   }
