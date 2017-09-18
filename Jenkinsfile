@@ -67,8 +67,7 @@ pipeline {
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
-              tar -cvzf package.tar.gz package
-              docker build -t chicocode/nodejs-release -f docker\release\Dockerfile .
+              docker build -t chicocode/nodejs-release -f docker/release/Dockerfile .
           '''
           archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
         }
