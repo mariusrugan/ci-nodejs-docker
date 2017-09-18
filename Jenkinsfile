@@ -72,15 +72,15 @@ pipeline {
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
           '''
         }
-        rel = docker.build(${REL_IMAGE}, "-f docker/release/Dockerfile .")
-        docker.withRegistry(${DOCKER_DISTRIBUTION}, 'docker-hub-credentials') {
-            rel.push("latest")
-        }
+      }
+      rel = docker.build(${REL_IMAGE}, "-f docker/release/Dockerfile .")
+      docker.withRegistry(${DOCKER_DISTRIBUTION}, 'docker-hub-credentials') {
+          rel.push("latest")
       }
       post {
-          always {
-              sh 'docker rm ${APP}'
-          }
+        always {
+            sh 'docker rm ${APP}'
+        }
       }
     }
   }
