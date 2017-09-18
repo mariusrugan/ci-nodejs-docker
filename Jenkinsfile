@@ -69,7 +69,6 @@ pipeline {
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               docker build -t chicocode/nodejs-release -f docker/release/Dockerfile .
           '''
-          archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
         }
       }
       post {
