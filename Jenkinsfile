@@ -71,10 +71,10 @@ pipeline {
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
           '''
-          rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
-          docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
+          rel = docker.build(${REL_IMAGE}, "-f docker/release/Dockerfile .")
+          docker.withRegistry(${DOCKER_DISTRIBUTION}, "docker-hub-credentials") {
             rel.push("latest")
-            rel.push(version)
+            rel.push(new_version)
           }
         }
       }
