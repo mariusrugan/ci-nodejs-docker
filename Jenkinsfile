@@ -1,8 +1,10 @@
 pipeline {
   agent any
   environment {
-    PROJECT_NAME = "ci_nodejs_${BUILD_ID}"
+    PROJECT_NAME = "article_app_${BUILD_ID}"
     COMPOSE_FILE = "docker/dev/docker-compose.yml"
+    DEV_IMAGE = "chicocode/articles_app:dev"
+    REL_IMAGE = "chicocode/articles_app"
   }
   stages {
     stage('Pull & Build Images') {
@@ -22,7 +24,7 @@ pipeline {
           },
           "Unit tests": {
             sh '''
-               docker run --entrypoint yarn --name ${UNIT_APP} chicocode/ci-nodejs-docker test:unit --testResultsProcessor jest-junit
+               docker run --entrypoint yarn --name ${UNIT_APP} ${DEV_IMAGE} test:unit --testResultsProcessor jest-junit
                docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage
             '''
             publishHTML (target: [
@@ -63,11 +65,11 @@ pipeline {
               parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
           }
           sh '''
-              docker run --entrypoint sh --name ${APP} chicocode/ci-nodejs-docker -c "yarn version --new-version ${new_version} && yarn compile"
+              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c "yarn version --new-version ${new_version} && yarn compile"
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
-              docker build -t chicocode/nodejs-release -f docker/release/Dockerfile .
+              docker build -t ${REL_IMAGE} -f docker/release/Dockerfile .
           '''
         }
       }
