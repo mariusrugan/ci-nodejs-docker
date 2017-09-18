@@ -72,7 +72,7 @@ pipeline {
           '''
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
-            
+            rel.push("latest")
           }
         }
       }
