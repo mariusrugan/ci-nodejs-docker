@@ -3,8 +3,9 @@ pipeline {
   environment {
     PROJECT_NAME = "article_app_${BUILD_TAG}"
     COMPOSE_FILE = "docker/dev/docker-compose.yml"
-    DEV_IMAGE = "chicocode/articles_app:dev"
     REL_IMAGE = "chicocode/articles_app"
+    DEV_IMAGE = "${REL_IMAGE}:dev"
+    DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
   }
   stages {
     stage('Pull & Build Images') {
@@ -71,8 +72,9 @@ pipeline {
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
           '''
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
-          docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
+          docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
             rel.push("latest")
+            rel.push(version)
           }
         }
       }
