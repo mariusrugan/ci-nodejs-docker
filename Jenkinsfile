@@ -72,9 +72,8 @@ pipeline {
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
           '''
         }
-        def rel = docker.build(${REL_IMAGE}, "-f docker/release/Dockerfile .")
         docker.withRegistry(${DOCKER_DISTRIBUTION}, 'docker-hub-credentials') {
-            rel.push("latest")
+            
         }
       }
       post {
