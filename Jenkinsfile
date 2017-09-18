@@ -70,6 +70,7 @@ pipeline {
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
           '''
+          rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("https://registry.hub.docker.com", "docker-hub-credentials") {
             
           }
