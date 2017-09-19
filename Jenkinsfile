@@ -77,6 +77,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh """
               git add app/package.json
+              git config --global user.name '${GIT_USERNAME}'
               git commit -m 'Jenkins bumped to version ${new_version}'
               git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git --tags
             """
