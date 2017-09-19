@@ -66,8 +66,8 @@ pipeline {
             env.new_version = input message: "Bump version (current version: ${version})",
               parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
           }
-          sh '''
-              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
+          sh """
+              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c yarn compile && yarn version --new-version ${new_version}
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
@@ -75,7 +75,7 @@ pipeline {
               git add ./app/package.json
               git commit -m "Bumps version to ${new_version}"
               git push origin release
-          '''
+          """
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
             rel.push("latest")
