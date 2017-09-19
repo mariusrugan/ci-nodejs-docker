@@ -62,7 +62,8 @@ pipeline {
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | grep version | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'')
           timeout(time: 15, unit: 'SECONDS') {
-            env.new_version = input message: 'Bump version (current version: ' + version + ')',
+            env.new_version = "0.0.3"
+            env.new_version = input message: "Bump version (current version: ${version}')",
               parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
           }
           sh '''
