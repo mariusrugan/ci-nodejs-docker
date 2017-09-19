@@ -73,7 +73,7 @@ pipeline {
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               cp ./package/package.json ./app/package.json
               git add ./app/package.json
-              git commit -m "Bumps version to ${new_version}"
+              git commit -m 'Bumps version to ${new_version}'
               git push origin release
           """
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
