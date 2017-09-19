@@ -60,7 +60,7 @@ pipeline {
       }
       steps {
         script {
-          version = sh(returnStdout: true, script: 'cat app/package.json | grep version | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'')
+          version = sh(returnStdout: true, script: 'cat app/package.json | jq .version')
           timeout(time: 15, unit: 'SECONDS') {
             env.new_version = sh(returnStdout: true, script: "semver bump patch ${version}")
             env.new_version = input message: "Bump version (current version: ${version})",
@@ -71,14 +71,15 @@ pipeline {
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
+              cp ./package/package.json ./app/package.json
+              git add ./app/package.json
+              git commit -m "Bumps version to ${new_version}"
+              git push origin release
           '''
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
             rel.push("latest")
             rel.push(new_version)
-          }
-          withCredentials([usernamePassword(credentialsId: 'git-pass-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@<REPO>"
           }
         }
       }
