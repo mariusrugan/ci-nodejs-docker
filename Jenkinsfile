@@ -73,7 +73,7 @@ pipeline {
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
-              cp ./package/package.json ./app/package.json
+              cp package/package.json app/package.json
           """
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh """
@@ -81,7 +81,7 @@ pipeline {
               git config --global user.name '${GIT_USERNAME}'
               git config --global user.email '${GIT_EMAIL}'
               git commit -m 'Jenkins bumped to version ${new_version}'
-              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git --tags
+              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git
             """
           }
         }
