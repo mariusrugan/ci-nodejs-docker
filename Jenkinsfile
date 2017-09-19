@@ -67,7 +67,7 @@ pipeline {
               parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
           }
           sh '''
-              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c \"yarn version --new-version ${new_version} && yarn compile\"
+              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c "yarn version --new-version ${new_version} && yarn compile"
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
