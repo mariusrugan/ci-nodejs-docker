@@ -6,6 +6,7 @@ pipeline {
     REL_IMAGE = "chicocode/articles_app"
     DEV_IMAGE = "${REL_IMAGE}:dev"
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
+    REPO = "github.com/chicocode/ci-nodejs-docker.git"
   }
   stages {
     stage('Pull & Build Images') {
@@ -80,6 +81,10 @@ pipeline {
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
             rel.push("latest")
             rel.push(new_version)
+          }
+          withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            sh "git add app/package.json"
+            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git --tags"
           }
         }
       }
