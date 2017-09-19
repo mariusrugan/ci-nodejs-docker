@@ -88,10 +88,12 @@ pipeline {
   }
   post {
       always {
+          project = sh(returnStdout: true, script: "${BUILD_TAG} | sed -e 's/\(\-\|\_\)//g'")
           sh '''
              docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop
              docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v
-             docker network ls --filter name=${BUILD_TAG}_default -q | xargs -I ARGS docker network rm ARGS
+             network =  sed -e 's/\(\-\|\_\)//g'
+             docker network ls --filter name=${project}_default -q | xargs -I ARGS docker network rm ARGS
           '''
       }
   }
