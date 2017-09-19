@@ -74,11 +74,7 @@ pipeline {
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               cp ./package/package.json ./app/package.json
           """
-          rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
-          docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
-            rel.push("latest")
-            rel.push(new_version)
-          }
+          
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh "git add app/package.json"
             sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git --tags"
