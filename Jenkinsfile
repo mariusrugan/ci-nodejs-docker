@@ -62,9 +62,9 @@ pipeline {
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | grep version | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'')
           timeout(time: 15, unit: 'SECONDS') {
-            env.new_version = "0.0.3"
-            env.new_version = input message: "Bump version (current version: ${version}')",
-              parameters: [text(name: 'New version', defaultValue: version, description: 'app\'s new version')]
+            env.new_version = sh(returnStdout: true, script: "semver bump patch ${version}")
+            env.new_version = input message: "Bump version (current version: ${version})",
+              parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
           }
           sh '''
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c "yarn version --new-version ${new_version} && yarn compile"
