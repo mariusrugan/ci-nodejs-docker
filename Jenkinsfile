@@ -81,7 +81,7 @@ pipeline {
               git config --global user.name '${GIT_USERNAME}'
               git config --global user.email '${GIT_EMAIL}'
               git commit -m 'Jenkins bumped to version ${new_version}'
-              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git origin release
+              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git HEAD:release
             """
           }
         }
