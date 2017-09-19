@@ -91,7 +91,7 @@ pipeline {
           sh '''
              docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} stop
              docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} rm -f -v
-             docker network ls --filter name=$(${BUILD_TAG} | sed -e 's/\(\-\|\_\)//g')_default -q | xargs -I ARGS docker network rm ARGS
+             docker network ls --filter name=$(${BUILD_TAG} | sed 's/\\(\\-\\|\\_\\)//g')_default -q | xargs -I ARGS docker network rm ARGS
           '''
       }
   }
