@@ -9,14 +9,11 @@ pipeline {
     REPO = "github.com/chicocode/ci-nodejs-docker.git"
     GIT_EMAIL = "eu@chicocode.io"
   }
-  parameters {
-    string(defaultValue: "TEST", description: 'What environment?', name: 'userFlag')
-    choice(choices: 'US-EAST-1\nUS-WEST-2', description: 'What AWS region?', name: 'region')
-  }
   stages {
     stage('Pull & Build Images') {
       steps {
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
+        input message: 'Which environment?', ok: 'Continuar', parameters: [[$class: 'ChoiceParameterDefinition', choices: 'Red\nBlue\nGreen', description: 'Descrição', name: 'ambiente']]
       }
     }
     stage('Test') {
