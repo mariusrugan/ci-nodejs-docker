@@ -77,7 +77,7 @@ pipeline {
           """
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
-            rel.push("latest", "--force false")
+            rel.push("latest")
             rel.push(new_version)
           }
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
