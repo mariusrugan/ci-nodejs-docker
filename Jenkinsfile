@@ -13,9 +13,11 @@ pipeline {
     stage('Pull & Build Images') {
       steps {
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
-        env.ambiente = input message: 'Which environment?', ok: 'Continuar', parameters: [[$class: 'ChoiceParameterDefinition', choices: 'Red\nBlue\nGreen', description: 'Descrição', name: 'ambiente']]
-
-        echo "Ambiente: ${env.ambiente}"
+          script {
+            env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+              parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+            }
+          echo "${env.RELEASE_SCOPE}"
       }
     }
     stage('Test') {
