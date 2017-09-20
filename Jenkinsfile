@@ -10,6 +10,10 @@ pipeline {
     GIT_EMAIL = "eu@chicocode.io"
   }
   stages {
+    parameters {
+      string(defaultValue: "TEST", description: 'What environment?', name: 'userFlag')
+      choice(choices: 'US-EAST-1\nUS-WEST-2', description: 'What AWS region?', name: 'region')
+    }
     stage('Pull & Build Images') {
       steps {
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
@@ -61,11 +65,6 @@ pipeline {
         branch 'release'
       }
       steps {
-        parameters {
-            string(defaultValue: "TEST", description: 'What environment?', name: 'userFlag')
-            // choices are newline separated
-            choice(choices: 'US-EAST-1\nUS-WEST-2', description: 'What AWS region?', name: 'region')
-        }
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | jq .version')
           timeout(time: 15, unit: 'SECONDS') {
