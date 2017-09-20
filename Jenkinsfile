@@ -74,7 +74,7 @@ pipeline {
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               cp package/package.json app/package.json
-              docker build ${REL_IMAGE} -f docker/release/Dockerfile .
+              docker build -t '${REL_IMAGE}' -f docker/release/Dockerfile ./
           """
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
             sh """
