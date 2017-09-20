@@ -86,10 +86,9 @@ pipeline {
           }
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh """
-              git checkout release
-              git add app/package.json
               git config --global user.name '${GIT_USERNAME}'
               git config --global user.email '${GIT_EMAIL}'
+              git add app/package.json
               git commit -m 'Unicorn says new release! scope: ${env.RELEASE_SCOPE}'
               git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git HEAD:release
             """
