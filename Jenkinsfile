@@ -13,11 +13,6 @@ pipeline {
     stage('Pull & Build Images') {
       steps {
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
-          script {
-            env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-              parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
-            }
-          echo "${env.RELEASE_SCOPE}"
       }
     }
     stage('Test') {
@@ -68,12 +63,13 @@ pipeline {
       steps {
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | jq .version')
+          patch = sh(returnStdout: true, script: "semver bump patch ${version}")
+          minor = sh(returnStdout: true, script: "semver bump minor ${version}")
+          major = sh(returnStdout: true, script: "semver bump major ${version}")
           timeout(time: 15, unit: 'SECONDS') {
-            patch = sh(returnStdout: true, script: "semver bump patch ${version}")
-            minor = sh(returnStdout: true, script: "semver bump patch ${version}")
-            major = sh(returnStdout: true, script: "semver bump patch ${version}")
-            env.new_version = input message: "Bump version (current version: ${version})",
-              parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
+            env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+              parameters: [choice(name: 'RELEASE_SCOPE', choices: "patch (${patch})\nminor\nmajor", description: 'What is the release scope?')]
+            
           }
           sh """
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
