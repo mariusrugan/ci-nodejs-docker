@@ -61,10 +61,17 @@ pipeline {
         branch 'release'
       }
       steps {
+        parameters {
+            string(defaultValue: "TEST", description: 'What environment?', name: 'userFlag')
+            // choices are newline separated
+            choice(choices: 'US-EAST-1\nUS-WEST-2', description: 'What AWS region?', name: 'region')
+        }
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | jq .version')
           timeout(time: 15, unit: 'SECONDS') {
-            env.new_version = sh(returnStdout: true, script: "semver bump patch ${version}")
+            patch = sh(returnStdout: true, script: "semver bump patch ${version}")
+            minor = sh(returnStdout: true, script: "semver bump patch ${version}")
+            major = sh(returnStdout: true, script: "semver bump patch ${version}")
             env.new_version = input message: "Bump version (current version: ${version})",
               parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
           }
