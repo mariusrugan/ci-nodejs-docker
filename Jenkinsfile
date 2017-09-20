@@ -68,6 +68,7 @@ pipeline {
             env.new_version = input message: "Bump version (current version: ${version})",
               parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
           }
+          env.new_version = "0.0.4"
           sh """
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
               docker cp ${APP}:app/build/ ./package
