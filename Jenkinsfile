@@ -70,11 +70,10 @@ pipeline {
             env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
               parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 none ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
           }
-          echo "scope: ${env.RELEASE_SCOPE}"
           version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 none //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
-          echo "scope: ${version_number}"
+          echo "scope: ${env.RELEASE_SCOPE}"
           sh """
-              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
+              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${version_number}'
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
@@ -83,14 +82,14 @@ pipeline {
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
             rel.push("latest")
-            rel.push("0.0.4")
+            rel.push(version_number)
           }
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh """
               git add app/package.json
               git config --global user.name '${GIT_USERNAME}'
               git config --global user.email '${GIT_EMAIL}'
-              git commit -m 'Jenkins bumped to version ${new_version}'
+              git commit -m 'Unicorn says new release! scope: ${env.RELEASE_SCOPE}'
               git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git HEAD:release
             """
           }
