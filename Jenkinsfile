@@ -63,12 +63,12 @@ pipeline {
       steps {
         script {
           version = sh(returnStdout: true, script: 'cat app/package.json | jq .version')
-          patch = sh(returnStdout: true, script: "semver bump patch ${version}")
-          minor = sh(returnStdout: true, script: "semver bump minor ${version}")
-          major = sh(returnStdout: true, script: "semver bump major ${version}")
+          patch = sh(returnStdout: true, script: "semver bump patch ${version} | tr -d '[:space:]'")
+          minor = sh(returnStdout: true, script: "semver bump minor ${version} | tr -d '[:space:]'")
+          major = sh(returnStdout: true, script: "semver bump major ${version} | tr -d '[:space:]'")
           timeout(time: 2, unit: 'DAYS') {
             env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽none\n🔥patch―'${patch}'\n👾minor―${minor}\n🎉major―${major}", description: 'What is the release scope?')]
+              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽none\n🔥patch―${patch}\n🤖minor―${minor}\n🎉major―${major}", description: 'What is the release scope?')]
           }
           sh """
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
