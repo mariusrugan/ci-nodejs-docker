@@ -2,7 +2,7 @@ pipeline {
   agent any
   environment {
     PROJECT_NAME = "article_app_${BUILD_TAG}"
-    COMPOSE_FILE = "docker/dev/docker-compose.yml"
+    COMPOSE_FILE = "docker/build/docker-compose.yml"
     REL_IMAGE = "chicocode/articles_app"
     DEV_IMAGE = "${REL_IMAGE}:dev"
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
