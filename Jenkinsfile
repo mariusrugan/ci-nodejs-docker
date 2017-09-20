@@ -68,7 +68,7 @@ pipeline {
           major = sh(returnStdout: true, script: "semver bump major ${version}").trim()
           timeout(time: 2, unit: 'DAYS') {
             env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
-              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽none ${version}\n🔥patch ${patch}\n🐉minor ${minor}\n🎉major ${major}", description: '🌈 What is the release scope? 🌈')]
+              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽none ${version}\n🔥patch ${patch}\n☄minor ${minor}\n🎉major ${major}", description: '🌈 What is the release scope? 🌈')]
           }
           echo "scope: ${env.RELEASE_SCOPE}"
           sh """
