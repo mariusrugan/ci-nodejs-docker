@@ -74,11 +74,14 @@ pipeline {
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               cp package/package.json app/package.json
+              docker build ${REL_IMAGE} -f docker/release/Dockerfile .
           """
-          rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
-            rel.push("latest")
-            rel.push(new_version)
+            sh """
+               docker tag ${REL_IMAGE} latest
+               docker tag ${REL_IMAGE} '${new_version}'
+               docker push ${REL_IMAGE}
+            """
           }
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh """
