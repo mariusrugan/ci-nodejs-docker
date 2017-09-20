@@ -67,9 +67,10 @@ pipeline {
           minor = sh(returnStdout: true, script: "semver bump minor ${version}").trim()
           major = sh(returnStdout: true, script: "semver bump major ${version}").trim()
           timeout(time: 2, unit: 'DAYS') {
-            env.RELEASE_SCOPE = input message: '🦄 User input required', ok: 'Release!',
-              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽none ${version}\n🔥patch ${patch}\n🐉minor ${minor}\n🎉major ${major}", description: 'What is the release scope?')]
+            env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
+              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽none ${version}\n🔥patch ${patch}\n🐉minor ${minor}\n🎉major ${major}", description: '🌈 What is the release scope? 🌈')]
           }
+          echo "scope: ${env.RELEASE_SCOPE}"
           sh """
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
               docker cp ${APP}:app/build/ ./package
