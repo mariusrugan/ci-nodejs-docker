@@ -13,7 +13,9 @@ pipeline {
     stage('Pull & Build Images') {
       steps {
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
-        input message: 'Which environment?', ok: 'Continuar', parameters: [[$class: 'ChoiceParameterDefinition', choices: ['Red', 'Blue', 'Green'], description: '', name: 'ambiente']]
+        input message: 'Which environment?', ok: 'Continuar', parameters: [[$class: 'ChoiceParameterDefinition', choices: 'Red\nBlue\nGreen', description: 'Descrição', name: 'ambiente']]
+
+        echo "Ambiente: ${ambiente}"
       }
     }
     stage('Test') {
