@@ -71,6 +71,8 @@ pipeline {
               parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 none ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
           }
           echo "scope: ${env.RELEASE_SCOPE}"
+          version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 none //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
+          echo "scope: ${version_number}"
           sh """
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
               docker cp ${APP}:app/build/ ./package
