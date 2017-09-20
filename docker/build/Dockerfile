@@ -5,7 +5,7 @@ LABEL application=ci-nodejs-docker
 
 WORKDIR /app
 
-COPY docker/dev/wait-for /
+COPY docker/build/wait-for /
 RUN apk update && chmod +x /wait-for
 
 COPY app/package.json app/yarn.lock ./
