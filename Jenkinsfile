@@ -68,21 +68,17 @@ pipeline {
             env.new_version = input message: "Bump version (current version: ${version})",
               parameters: [text(name: 'New version', defaultValue: new_version, description: 'app\'s new version')]
           }
-          env.new_version = "0.0.4"
           sh """
               docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${new_version}'
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               cp package/package.json app/package.json
-              docker build -t '${REL_IMAGE}' -f docker/release/Dockerfile ./
           """
+          rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
           docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
-            sh """
-               docker tag ${REL_IMAGE} latest
-               docker tag ${REL_IMAGE} '${new_version}'
-               docker push ${REL_IMAGE}
-            """
+            rel.push("latest", "--force false")
+            rel.push(new_version)
           }
           withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh """
