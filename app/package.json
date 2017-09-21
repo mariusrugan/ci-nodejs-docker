@@ -1,6 +1,6 @@
 {
   "name": "ci_node_js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "engineStrict": true,
   "engines": {
