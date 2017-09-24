@@ -4,10 +4,12 @@ services:
   app:
     build:
       context: ../../
-      dockerfile: docker/build/Dockerfile
-    image: chicocode/articles_app:buid
+      dockerfile: docker/dev/Dockerfile
+    image: chicocode/articles_app:dev
+    volumes:
+      - ../../app/src:/app/src
     ports:
-      - 8080:8080
+      - 8090:8080
     links:
       - db
     environment:

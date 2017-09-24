@@ -4,7 +4,7 @@ pipeline {
     PROJECT_NAME = "article_app_${BUILD_TAG}"
     COMPOSE_FILE = "docker/build/docker-compose.yml"
     REL_IMAGE = "chicocode/articles_app"
-    DEV_IMAGE = "${REL_IMAGE}:dev"
+    BUILD_IMAGE = "${REL_IMAGE}:build"
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
     REPO = "github.com/chicocode/ci-nodejs-docker.git"
     GIT_EMAIL = "eu@chicocode.io"
@@ -27,7 +27,7 @@ pipeline {
           },
           "Unit tests": {
             sh '''
-               docker run --entrypoint yarn --name ${UNIT_APP} ${DEV_IMAGE} test:unit --testResultsProcessor jest-junit
+               docker run --entrypoint yarn --name ${UNIT_APP} ${BUILD_IMAGE} test:unit --testResultsProcessor jest-junit
                docker cp ${UNIT_APP}:/app/coverage/lcov-report ./coverage
             '''
             publishHTML (target: [
@@ -73,7 +73,7 @@ pipeline {
           version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 none //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
           echo "scope: ${env.RELEASE_SCOPE}"
           sh """
-              docker run --entrypoint sh --name ${APP} ${DEV_IMAGE} -c 'yarn compile && yarn version --new-version ${version_number}'
+              docker run --entrypoint sh --name ${APP} ${BUILD_IMAGE} -c 'yarn compile && yarn version --new-version ${version_number}'
               docker cp ${APP}:app/build/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
