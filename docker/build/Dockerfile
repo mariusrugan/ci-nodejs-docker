@@ -10,7 +10,7 @@ RUN apk update && chmod +x /wait-for
 
 COPY app/package.json app/yarn.lock ./
 
-RUN yarn install
+RUN yarn install --emoji
 
 COPY app .
 

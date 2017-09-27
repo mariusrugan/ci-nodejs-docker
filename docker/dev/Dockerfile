@@ -10,7 +10,7 @@ RUN apk update && chmod +x /wait-for
 
 COPY app ./
 
-RUN yarn install
+RUN yarn install --emoji
 
 VOLUME /app/src
 

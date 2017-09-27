@@ -5,7 +5,7 @@ WORKDIR /application
 
 COPY package/package.json package/yarn.lock ./
 
-RUN yarn install --production
+RUN yarn install --production --emoji
 
 FROM alpine:3.6
 

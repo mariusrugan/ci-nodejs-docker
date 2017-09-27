@@ -1,5 +1,5 @@
-import Bookshelf from '../../db'
-import Article from '../../articles/Article'
+import Bookshelf from '../../../db'
+import Article from '../../../articles/Article'
 
 beforeEach(() => Bookshelf.knex.raw('BEGIN'))
 afterEach(() => Bookshelf.knex.raw('ROLLBACK'))

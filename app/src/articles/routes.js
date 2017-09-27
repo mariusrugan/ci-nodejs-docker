@@ -8,16 +8,18 @@ export async function getArticles(ctx) {
   ctx.body = articles
 }
 
-export async function getArticle(ctx) {
+export async function getArticle(ctx, next) {
   const { id } = ctx.params
   let article = await Article.where({ id }).fetch()
   ctx.body = article
+  await next()
 }
 
 export async function updateArticle(ctx) {
   let article = ctx.body
   const { title, description } = ctx.request.body
-  ctx.body = await article.save({ title, description })
+  console.log(Date.now())
+  ctx.body = await article.save({ title, description, updated_at: Date.now() })
 }
 
 export async function createArticle(ctx) {
@@ -36,5 +38,5 @@ export default new Router({ prefix: '/article:s?' })
   .get('/', getArticles)
   .get('/:id', getArticle)
   .post('/', validate(schema), createArticle)
-  .patch('/:id', updateArticle)
-  .delete('/:id', removeArticle)
+  .patch('/:id', getArticle, updateArticle)
+  .delete('/:id', getArticle, removeArticle)
