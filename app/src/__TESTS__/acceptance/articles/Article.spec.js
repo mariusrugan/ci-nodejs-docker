@@ -39,12 +39,13 @@ describe('articles api', () => {
   })
 
   it('POST /articles', async () => {
-    let res = await request
-      .post('/article')
-      .send({ title: 'article title', description: 'article desc' })
     Date.now = jest
       .genMockFunction()
       .mockReturnValue(new Date('2017-11-25T12:34:56z'))
+
+    let res = await request
+      .post('/article')
+      .send({ title: 'article title', description: 'article desc' })
 
     expect(res.status).toBe(200)
     expect(res.body).toMatchSnapshot()
