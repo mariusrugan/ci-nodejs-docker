@@ -5,7 +5,7 @@ services:
     build:
       context: ../../
       dockerfile: docker/build/Dockerfile
-    image: chicocode/articles_app:buid
+    image: chicocode/articles_app:build
     ports:
       - 8080:8080
     links:
