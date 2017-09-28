@@ -18,7 +18,6 @@ export async function getArticle(ctx, next) {
 export async function updateArticle(ctx) {
   let article = ctx.body
   const { title, description } = ctx.request.body
-  console.log(Date.now())
   ctx.body = await article.save({ title, description, updated_at: Date.now() })
 }
 

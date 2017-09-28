@@ -18,12 +18,16 @@ pipeline {
     stage('Test') {
       environment {
         INTEGRATION_APP = "app-integration-tests-${BUILD_TAG}"
+        ACCEPTANCE_APP = "app-acceptance-tests-${BUILD_TAG}"
         UNIT_APP = "app-unit-tests-${BUILD_TAG}"
       }
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run -u root --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
+          },
+          "Acceptance tests": {
+            sh 'docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:acceptance --testResultsProcessor jest-junit'
           },
           "Unit tests": {
             sh '''
@@ -45,6 +49,7 @@ pipeline {
         always {
           sh '''
              docker cp ${INTEGRATION_APP}:/app/junit.xml ./integration-tests.junit.xml
+             docker cp ${ACCEPTANCE_APP}:/app/junit.xml ./acceptance-tests.junit.xml
              docker cp ${UNIT_APP}:/app/junit.xml ./unit-tests.junit.xml
           '''
           junit '*.junit.xml'
@@ -80,7 +85,7 @@ pipeline {
               cp package/package.json app/package.json
           """
           rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
-          docker.withRegistry("${DOCKER_DISTRIBUTION}", "docker-hub-credentials") {
+          docker.withRegistry("${DOCKER_DISTRIBUTION}", "dockerhub-credentials") {
             rel.push("latest")
             rel.push(version_number)
           }
