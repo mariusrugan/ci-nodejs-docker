@@ -40,7 +40,7 @@ Object {
 
 exports[`articles api POST /articles 1`] = `
 Object {
-  "created_at": "2017-09-28T00:43:31.496Z",
+  "created_at": "2017-09-28T01:17:00.056Z",
   "description": "article desc",
   "id": 1,
   "title": "article title",
