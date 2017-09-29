@@ -66,6 +66,7 @@ pipeline {
         branch 'release'
       }
       steps {
+        milestone()
         parallel(
           "Build & Push Image Distribution": {
             script {
@@ -73,12 +74,10 @@ pipeline {
               patch = sh(returnStdout: true, script: "semver bump patch ${version}").trim()
               minor = sh(returnStdout: true, script: "semver bump minor ${version}").trim()
               major = sh(returnStdout: true, script: "semver bump major ${version}").trim()
-              milestone()
               timeout(time: 2, unit: 'DAYS') {
                 env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
                   parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 unchanged ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
               }
-              milestone()
               version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 unchanged //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
               echo "scope: ${env.RELEASE_SCOPE}"
               sh """
@@ -108,6 +107,7 @@ pipeline {
             echo "Vualá"
           }
         )
+        milestone()
       }
       post {
         always {
