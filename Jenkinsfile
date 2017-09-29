@@ -94,8 +94,8 @@ pipeline {
       steps {
         parallel(
           "Generate Artfacts": {
-            script {
-              tar -cvzf package.tar.gz package
+            steps {
+              sh "tar -cvzf package-${BUILD_TAG}.tar.gz package"
               archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
             }
           },
