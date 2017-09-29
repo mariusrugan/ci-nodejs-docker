@@ -110,8 +110,10 @@ pipeline {
   post {
       always {
           sh '''
-             docker-compose -f ${COMPOSE_FILE} stop
-             docker-compose -f ${COMPOSE_FILE} rm -f -v
+             docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} stop
+             docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} rm -f -v
+             docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} stop
+             docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} rm -f -v
              docker network ls --filter name=$(${BUILD_TAG} | sed 's/\\(\\-\\|\\_\\)//g')_default -q | xargs -I ARGS docker network rm ARGS
           '''
       }
