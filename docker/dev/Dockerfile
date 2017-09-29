@@ -5,16 +5,15 @@ LABEL application=ci-nodejs-docker
 
 WORKDIR /app
 
-COPY docker/build/wait-for /
+COPY docker/dev/wait-for /
 RUN apk update && chmod +x /wait-for
 
-COPY app/package.json app/yarn.lock ./
+COPY app ./
 
 RUN yarn install --emoji
 
-COPY app .
+VOLUME /app/src
 
 ENTRYPOINT ["/wait-for", "db:5432", "--"]
 
 CMD ["yarn", "dev"]
-

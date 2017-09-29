@@ -25,23 +25,33 @@ describe('Articles route', () => {
 
   it('getArticle should fetch by id', async () => {
     let ctx = { params: { id: 1 } }
-    await getArticle(ctx)
+    let next = jest.fn()
+
+    await getArticle(ctx, next)
+
     expect(ctx.body).toEqual({ article: 'article' })
     expect(Article.where).toBeCalledWith({ id: ctx.params.id })
+    expect(next).toHaveBeenCalled()
   })
 
   it('updateArticle should call save with correct article props', async () => {
+    let updated_at = new Date('2017-11-25T12:34:56z')
+    Date.now = jest.genMockFunction().mockReturnValue(updated_at)
+
     let save = jest.fn(obj => Object.assign({ id: 1 }, obj))
     let ctx = {
       request: { body: { title: 'title', description: 'description' } },
       body: { save }
     }
     await updateArticle(ctx)
-    expect(ctx.body).toEqual(Object.assign({ id: 1 }, ctx.request.body))
+    expect(ctx.body).toEqual(
+      Object.assign({ id: 1, updated_at }, ctx.request.body)
+    )
 
     expect(save).toBeCalledWith({
       title: 'title',
-      description: 'description'
+      description: 'description',
+      updated_at
     })
   })
 

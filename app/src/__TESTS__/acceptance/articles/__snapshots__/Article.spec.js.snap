@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`articles api DELETE /articles/{id} 1`] = `
+Object {
+  "info": "success",
+}
+`;
+
+exports[`articles api GET /articles 1`] = `
+Array [
+  Object {
+    "created_at": "2017-11-25T12:34:56.000Z",
+    "description": "description",
+    "id": 1,
+    "title": "title",
+    "updated_at": null,
+  },
+]
+`;
+
+exports[`articles api GET /articles/{id} 1`] = `
+Object {
+  "created_at": "2017-11-25T12:34:56.000Z",
+  "description": "description",
+  "id": 1,
+  "title": "title",
+  "updated_at": null,
+}
+`;
+
+exports[`articles api PATCH /articles/{id} 1`] = `
+Object {
+  "created_at": "2017-11-25T12:34:56.000Z",
+  "description": "description",
+  "id": 1,
+  "title": "new title",
+  "updated_at": "2017-11-25T12:34:56.000Z",
+}
+`;
+
+exports[`articles api POST /articles 1`] = `
+Object {
+  "created_at": "2017-11-25T12:34:56.000Z",
+  "description": "article desc",
+  "id": 1,
+  "title": "article title",
+}
+`;

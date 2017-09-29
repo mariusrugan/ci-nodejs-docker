@@ -1,6 +1,6 @@
 {
   "name": "ci_node_js",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "license": "MIT",
   "engineStrict": true,
   "engines": {
@@ -11,8 +11,9 @@
     "compile": "eslint . && babel src --quiet --out-dir build --ignore '**/*.spec.js'",
     "format": "prettier-eslint \"src/**/*.js\"",
     "test": "jest --config test.json --forceExit",
-    "test:watch": "yarn test --watch --collectCoverage false",
-    "test:integration": "yarn migrate && yarn test --collectCoverage false src/__TESTS__",
+    "test:watch": "yarn migrate && yarn test --watch --collectCoverage false",
+    "test:integration": "yarn migrate && yarn test --collectCoverage false src/__TESTS__/integration",
+    "test:acceptance": "yarn migrate && yarn test --collectCoverage false src/__TESTS__/acceptance",
     "test:unit": "yarn test --testPathIgnorePatterns src/__TESTS__",
     "dev": "yarn compile && babel-watch -L src/index.js --ignore '**/*.spec.js'",
     "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
@@ -40,6 +41,7 @@
     "nodemon": "^1.11.0",
     "prettier": "^1.6.1",
     "prettier-eslint-cli": "^4.3.0",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "supertest": "^3.0.0"
   }
 }
