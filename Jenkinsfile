@@ -59,7 +59,6 @@ pipeline {
     }
     stage('Deploy') {
       agent none
-      milestone()
       environment {
         APP = "app-${BUILD_TAG}"
       }
@@ -113,7 +112,6 @@ pipeline {
             sh 'docker rm ${APP}'
         }
       }
-      milestone()
     }
   }
   post {
