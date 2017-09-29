@@ -75,6 +75,7 @@ pipeline {
             env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
               parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 unchanged ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
           }
+          milestone()
           version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 unchanged //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
           echo "scope: ${env.RELEASE_SCOPE}"
           sh """
