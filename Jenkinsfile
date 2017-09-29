@@ -58,7 +58,6 @@ pipeline {
       }
     }
     stage('Compile') {
-      milestone()
       when {
         branch 'release'
       }
@@ -68,7 +67,6 @@ pipeline {
           echo 'Temp!'
         }
       }
-      milestone()
     }
     stage('Deploy') {
       agent none
