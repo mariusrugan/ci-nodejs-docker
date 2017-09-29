@@ -8,6 +8,7 @@ pipeline {
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
     REPO = "github.com/chicocode/ci-nodejs-docker.git"
     GIT_EMAIL = "eu@chicocode.io"
+    APP = "app-${BUILD_TAG}"
   }
   stages {
     stage('Pull & Build Images') {
@@ -57,45 +58,43 @@ pipeline {
         }
       }
     }
-    stage('Compile') {
+    stage('Bump & build') {
       when {
         branch 'release'
       }
       steps {
-        milestone()
         script {
-          echo 'Temp!'
+          version = sh(returnStdout: true, script: 'jq -r .version app/package.json').trim()
+          patch = sh(returnStdout: true, script: "semver bump patch ${version}").trim()
+          minor = sh(returnStdout: true, script: "semver bump minor ${version}").trim()
+          major = sh(returnStdout: true, script: "semver bump major ${version}").trim()
+          milestone()
+          timeout(time: 2, unit: 'DAYS') {
+            env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
+              parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 unchanged ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
+          }
+          milestone()
+          version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 unchanged //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
+          echo "scope: ${env.RELEASE_SCOPE}"
+          sh """
+              docker run --entrypoint sh --name ${APP} ${BUILD_IMAGE} -c 'yarn compile && yarn version --new-version ${version_number}'
+              docker cp ${APP}:app/build/ ./package
+              docker cp ${APP}:app/package.json ./package/package.json
+              docker cp ${APP}:app/yarn.lock ./package/yarn.lock
+              cp package/package.json app/package.json
+          """
         }
       }
     }
     stage('Deploy') {
       agent none
-      environment {
-        APP = "app-${BUILD_TAG}"
-      } when {
+      when {
         branch 'release'
       }
       steps {
         parallel(
           "Build & Push Image Distribution": {
             script {
-              version = sh(returnStdout: true, script: 'jq -r .version app/package.json').trim()
-              patch = sh(returnStdout: true, script: "semver bump patch ${version}").trim()
-              minor = sh(returnStdout: true, script: "semver bump minor ${version}").trim()
-              major = sh(returnStdout: true, script: "semver bump major ${version}").trim()
-              timeout(time: 2, unit: 'DAYS') {
-                env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
-                  parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 unchanged ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
-              }
-              version_number = sh(returnStdout: true, script: "echo ${env.RELEASE_SCOPE} | sed -e 's/👽 unchanged //' | sed -e 's/🔥 patch //' | sed -e 's/👹 minor //' | sed -e 's/🎉 major //' ").trim()
-              echo "scope: ${env.RELEASE_SCOPE}"
-              sh """
-                  docker run --entrypoint sh --name ${APP} ${BUILD_IMAGE} -c 'yarn compile && yarn version --new-version ${version_number}'
-                  docker cp ${APP}:app/build/ ./package
-                  docker cp ${APP}:app/package.json ./package/package.json
-                  docker cp ${APP}:app/yarn.lock ./package/yarn.lock
-                  cp package/package.json app/package.json
-              """
               rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
               docker.withRegistry("${DOCKER_DISTRIBUTION}", "dockerhub-credentials") {
                 rel.push("latest")
