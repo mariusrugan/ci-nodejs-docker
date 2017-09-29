@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+    image: chicocode/articles_app:dev
+    volumes:
+      - ../../app/src:/app/src
+    ports:
+      - 8090:8080
+    links:
+      - db
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: db_articles
+
+  db:
+    image: postgres
+    hostname: db
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: db_articles
