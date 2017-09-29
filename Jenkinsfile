@@ -94,10 +94,8 @@ pipeline {
       steps {
         parallel(
           "Generate Artfacts": {
-            steps {
-              sh "tar -cvzf package-${BUILD_TAG}.tar.gz package"
-              archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
-            }
+            sh "tar -cvzf package-${BUILD_TAG}.tar.gz package"
+            archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
           },
           "Build & Push Image Distribution": {
             script {
