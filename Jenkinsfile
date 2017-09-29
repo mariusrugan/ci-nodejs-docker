@@ -97,22 +97,24 @@ pipeline {
             sh "tar -cvzf package-${BUILD_TAG}.tar.gz package"
             archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
           },
-          "Build & Push Image Distribution": {
+          "Push Image & Update Cluster": {
             script {
               rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
               docker.withRegistry("${DOCKER_DISTRIBUTION}", "dockerhub-credentials") {
                 rel.push("latest")
                 rel.push(version_number)
               }
-              withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                sh """
-                  git config --global user.name '${GIT_USERNAME}'
-                  git config --global user.email '${GIT_EMAIL}'
-                  git add app/package.json
-                  git commit --allow-empty -m 'Unicorn says new release! scope: ${env.RELEASE_SCOPE}'
-                  git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git HEAD:release
-                """
-              }
+            }
+          },
+          "Update git": {
+            withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+              sh """
+                git config --global user.name '${GIT_USERNAME}'
+                git config --global user.email '${GIT_EMAIL}'
+                git add app/package.json
+                git commit --allow-empty -m 'Unicorn says new release! scope: ${env.RELEASE_SCOPE}'
+                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git HEAD:release
+              """
             }
           }
         )
