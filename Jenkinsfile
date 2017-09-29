@@ -62,10 +62,9 @@ pipeline {
         branch 'release'
       }
       steps {
+        milestone()
         script {
-          milestone
           echo 'Temp!'
-          milestone
         }
       }
     }
@@ -73,8 +72,7 @@ pipeline {
       agent none
       environment {
         APP = "app-${BUILD_TAG}"
-      }
-      when {
+      } when {
         branch 'release'
       }
       steps {
