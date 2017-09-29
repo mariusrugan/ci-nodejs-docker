@@ -58,23 +58,22 @@ pipeline {
       }
     }
     stage('Compile') {
+      milestone()
       when {
         branch 'release'
       }
       steps {
         script {
-          milestone
           echo 'Temp!'
-          milestone
         }
       }
+      milestone()
     }
     stage('Deploy') {
       agent none
       environment {
         APP = "app-${BUILD_TAG}"
-      }
-      when {
+      } when {
         branch 'release'
       }
       steps {
