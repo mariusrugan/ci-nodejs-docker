@@ -59,6 +59,7 @@ pipeline {
     }
     stage('Deploy') {
       agent none
+      milestone()
       environment {
         APP = "app-${BUILD_TAG}"
       }
@@ -66,7 +67,6 @@ pipeline {
         branch 'release'
       }
       steps {
-        milestone()
         parallel(
           "Build & Push Image Distribution": {
             script {
@@ -107,13 +107,13 @@ pipeline {
             echo "Vualá"
           }
         )
-        milestone()
       }
       post {
         always {
             sh 'docker rm ${APP}'
         }
       }
+      milestone()
     }
   }
   post {
