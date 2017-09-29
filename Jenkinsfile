@@ -71,6 +71,7 @@ pipeline {
           patch = sh(returnStdout: true, script: "semver bump patch ${version}").trim()
           minor = sh(returnStdout: true, script: "semver bump minor ${version}").trim()
           major = sh(returnStdout: true, script: "semver bump major ${version}").trim()
+          milestone()
           timeout(time: 2, unit: 'DAYS') {
             env.RELEASE_SCOPE = input message: '🦄 Please answer the unicorn', ok: 'Release!',
               parameters: [choice(name: 'RELEASE_SCOPE', choices: "👽 unchanged ${version}\n🔥 patch ${patch}\n👹 minor ${minor}\n🎉 major ${major}", description: '🌈 What is the release scope? 🌈')]
