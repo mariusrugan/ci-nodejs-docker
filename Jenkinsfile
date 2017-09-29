@@ -93,6 +93,12 @@ pipeline {
       }
       steps {
         parallel(
+          "Generate Artfacts": {
+            script {
+              tar -cvzf package.tar.gz package
+              archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
+            }
+          },
           "Build & Push Image Distribution": {
             script {
               rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
@@ -110,9 +116,6 @@ pipeline {
                 """
               }
             }
-          },
-          "Generate Artfacts": {
-            echo "Vualá"
           }
         )
       }
