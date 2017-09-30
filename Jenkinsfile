@@ -52,6 +52,8 @@ pipeline {
              docker cp ${INTEGRATION_APP}:/app/junit.xml ./integration-tests.junit.xml
              docker cp ${ACCEPTANCE_APP}:/app/junit.xml ./acceptance-tests.junit.xml
              docker cp ${UNIT_APP}:/app/junit.xml ./unit-tests.junit.xml
+             docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} down
+             docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} down
           '''
           junit '*.junit.xml'
           sh 'docker rm ${UNIT_APP}'
@@ -125,16 +127,5 @@ pipeline {
         }
       }
     }
-  }
-  post {
-      always {
-          sh '''
-             docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} stop
-             docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} rm -f -v
-             docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} stop
-             docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} rm -f -v
-             docker network ls --filter name=$(${BUILD_TAG} | sed 's/\\(\\-\\|\\_\\)//g')_default -q | xargs -I ARGS docker network rm ARGS
-          '''
-      }
   }
 }
