@@ -104,7 +104,7 @@ pipeline {
             sh "tar -cvzf package-${BUILD_TAG}.tar.gz package"
             archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
           },
-          "Push Image & Update Cluster": {
+          "Push Distribution Image": {
             script {
               rel = docker.build("${REL_IMAGE}", "-f docker/release/Dockerfile .")
               docker.withRegistry("${DOCKER_DISTRIBUTION}", "dockerhub-credentials") {
@@ -135,6 +135,7 @@ pipeline {
         sh """
         scp -P 2200 -o StrictHostKeyChecking=no docker/release/docker-compose.yml chicocode@ascchicocodemaster.eastus.cloudapp.azure.com:/home/chicocode/docker-compose.yml
         ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com docker stack deploy -c docker-compose.yml node-app
+        ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com docker run --rm --net app_appnet -e POSTGRES_HOST=db -e POSTGRES_USER=postgres_user -e POSTGRES_PASSWORD=postgres_password -e POSTGRES_DB=db_articles chicocode/articles_app yarn migrate
         """
       }
     }
