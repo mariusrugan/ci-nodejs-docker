@@ -1,27 +1,31 @@
 pipeline {
   agent any
+
   environment {
+    APP = "app-${BUILD_TAG}"
     PROJECT_NAME = "article_app_${BUILD_TAG}"
     COMPOSE_FILE = "docker/build/docker-compose.yml"
+
     REL_IMAGE = "chicocode/articles_app"
     BUILD_IMAGE = "${REL_IMAGE}:build"
+
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
     REPO = "github.com/chicocode/ci-nodejs-docker.git"
     GIT_EMAIL = "eu@chicocode.io"
-    APP = "app-${BUILD_TAG}"
   }
+
   stages {
     stage('Pull & Build Images') {
-      steps {
-        sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
-      }
+      steps { sh 'docker-compose -f ${COMPOSE_FILE} build --pull' }
     }
+
     stage('Test') {
       environment {
         INTEGRATION_APP = "app-integration-tests-${BUILD_TAG}"
         ACCEPTANCE_APP = "app-acceptance-tests-${BUILD_TAG}"
         UNIT_APP = "app-unit-tests-${BUILD_TAG}"
       }
+
       steps {
         parallel(
           "Integration tests": {
@@ -46,6 +50,7 @@ pipeline {
           }
         )
      }
+
      post {
         always {
           sh '''
@@ -60,10 +65,10 @@ pipeline {
         }
       }
     }
+
     stage('Bump & build') {
-      when {
-        branch 'release'
-      }
+      when { branch 'release' }
+
       steps {
         script {
           version = sh(returnStdout: true, script: 'jq -r .version app/package.json').trim()
@@ -88,11 +93,11 @@ pipeline {
         }
       }
     }
+
     stage('Deploy') {
       agent none
-      when {
-        branch 'release'
-      }
+      when { branch 'release' }
+
       steps {
         parallel(
           "Generate Artfacts": {
@@ -121,10 +126,16 @@ pipeline {
           }
         )
       }
-      post {
-        always {
-            sh 'docker rm ${APP}'
-        }
+
+      post { always { sh 'docker rm ${APP}' } }
+    },
+
+    stage("Update cluster") {
+      steps {
+        sh """
+        scp -P 2200 -o StrictHostKeyChecking=no scp_test chicocode@ascchicocodemaster.eastus.cloudapp.azure.com:/home/chicocode/scp_test
+        ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com cat scp_test
+        """
       }
     }
   }
