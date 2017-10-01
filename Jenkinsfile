@@ -134,7 +134,7 @@ pipeline {
       steps {
         sh """
         scp -P 2200 -o StrictHostKeyChecking=no docker/release/docker-compose.yml chicocode@ascchicocodemaster.eastus.cloudapp.azure.com:/home/chicocode/docker-compose.yml
-        ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com cat docker-compose.yml
+        ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com docker stack deploy -c docker-compose.yml node-app
         """
       }
     }
