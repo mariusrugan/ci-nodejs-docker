@@ -133,8 +133,8 @@ pipeline {
     stage("Update cluster") {
       steps {
         sh """
-        scp -P 2200 -o StrictHostKeyChecking=no scp_test chicocode@ascchicocodemaster.eastus.cloudapp.azure.com:/home/chicocode/scp_test
-        ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com cat scp_test
+        scp -P 2200 -o StrictHostKeyChecking=no docker/release/docker-compose.yml chicocode@ascchicocodemaster.eastus.cloudapp.azure.com:/home/chicocode/docker-compose.yml
+        ssh -p 2200  -o StrictHostKeyChecking=no chicocode@ascchicocodemaster.eastus.cloudapp.azure.com cat docker-compose.yml
         """
       }
     }
