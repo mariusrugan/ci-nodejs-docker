@@ -1,4 +1,4 @@
-temp {
+temps {
   agent any
   environment {
     PROJECT_NAME = "article_app_${BUILD_TAG}"
