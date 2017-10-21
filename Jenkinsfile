@@ -142,5 +142,7 @@ pipeline {
         """
       }
     }
+
+    post { always { deleteDir() } }
   }
 }
