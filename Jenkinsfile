@@ -131,6 +131,9 @@ pipeline {
     }
 
     stage("Update cluster") {
+
+      when { branch 'release' }
+
       steps {
         sh """
         scp -P 2200 -o StrictHostKeyChecking=no docker/release/docker-compose.yml chicocode@ascchicocodemaster.eastus.cloudapp.azure.com:/home/chicocode/docker-compose.yml
