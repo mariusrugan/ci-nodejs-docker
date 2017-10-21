@@ -14,7 +14,7 @@ COPY --from=dependency /usr/lib/libgcc* /usr/lib/libstdc* /usr/lib/
 
 WORKDIR /wdr/application
 
-COPY --from=dependency /application .
+COPY --from=dependency /wdr/application .
 RUN mv /wdr/application/package.json /wdr/package.json
 
 COPY package .
