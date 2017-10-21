@@ -12,7 +12,7 @@ export async function getArticle(ctx, next) {
   const { id } = ctx.params
   let article = await Article.where({ id }).fetch()
   ctx.body = article
-  await next()
+  if (ctx.body) await next()
 }
 
 export async function updateArticle(ctx) {
