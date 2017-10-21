@@ -8,6 +8,8 @@ services:
     image: chicocode/articles_app:build
     ports:
       - 8081:8081
+    depends_on:
+      - db
     environment:
       NODE_ENV: development
       POSTGRES_HOST: db
