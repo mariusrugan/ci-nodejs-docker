@@ -1,3 +1,5 @@
+import manifest from '../package.json'
+
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
@@ -9,7 +11,8 @@ if (process.env.NODE_ENV !== 'production') PrettyError.start()
 
 const home = new Router()
 home.get('/', async ctx => {
-  ctx.body = `🔥🔥🔥 api up! let's hack! 🔥🔥🔥 \n   ${Array(12).join('👾')}`
+  ctx.body = `🔥🔥🔥 api up! let's hack! ${manifest.version} 🔥🔥🔥 \n
+  ${Array(12).join('👾')}`
 })
 
 const app = new Koa()

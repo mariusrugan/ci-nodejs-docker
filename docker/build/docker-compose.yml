@@ -3,13 +3,11 @@ version: '3'
 services:
   app:
     build:
-      context: ../../
+      context: ../..
       dockerfile: docker/build/Dockerfile
     image: chicocode/articles_app:build
     ports:
-      - 8080:8080
-    links:
-      - db
+      - 8081:8081
     environment:
       NODE_ENV: development
       POSTGRES_HOST: db
@@ -19,7 +17,6 @@ services:
 
   db:
     image: postgres
-    hostname: db
     expose:
       - 5432
     environment:
