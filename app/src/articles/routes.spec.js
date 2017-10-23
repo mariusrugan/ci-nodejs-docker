@@ -2,7 +2,9 @@ jest.mock('./Article', () => ({
   schema: {},
   fetchAll: jest.fn(() => []),
   forge: jest.fn(obj => ({ save: () => obj })),
-  where: jest.fn(() => ({ fetch: () => ({ article: 'article' }) }))
+  where: jest.fn(({ id }) => ({
+    fetch: () => (id === 1 ? { article: 'article' } : null)
+  }))
 }))
 
 import Article from './Article'
@@ -32,6 +34,17 @@ describe('Articles route', () => {
     expect(ctx.body).toEqual({ article: 'article' })
     expect(Article.where).toBeCalledWith({ id: ctx.params.id })
     expect(next).toHaveBeenCalled()
+  })
+
+  it('getArticle should call next only if an article was found', async () => {
+    let ctx = { params: { id: -1 } }
+    let next = jest.fn()
+
+    await getArticle(ctx, next)
+
+    expect(ctx.body).toBeNull()
+    expect(Article.where).toBeCalledWith({ id: ctx.params.id })
+    expect(next).not.toHaveBeenCalled()
   })
 
   it('updateArticle should call save with correct article props', async () => {
