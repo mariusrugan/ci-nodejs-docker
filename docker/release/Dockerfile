@@ -1,7 +1,7 @@
 FROM mhart/alpine-node AS dependency
 MAINTAINER Francisco Berrocal <eu@chicocode.io>
 
-WORKDIR /application
+WORKDIR /wdr/application
 
 COPY package/package.json package/yarn.lock ./
 
@@ -12,13 +12,12 @@ FROM alpine:3.6
 COPY --from=dependency /usr/bin/node /usr/bin/
 COPY --from=dependency /usr/lib/libgcc* /usr/lib/libstdc* /usr/lib/
 
-WORKDIR /application
+WORKDIR /wdr/application
 
-COPY --from=dependency /application .
+COPY --from=dependency /wdr/application .
+RUN mv /wdr/application/package.json /wdr/package.json
 
 COPY package .
-
-EXPOSE 8080
 
 CMD ["node", "index.js"]
 

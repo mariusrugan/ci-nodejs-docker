@@ -8,8 +8,8 @@
   },
   "scripts": {
     "clear": "rimraf build coverage && mkdir build",
-    "compile": "eslint . && babel src --quiet --out-dir build --ignore '**/*.spec.js'",
-    "format": "prettier-eslint \"src/**/*.js\"",
+    "compile": "yarn lint && babel src --quiet --out-dir build --ignore '**/*.spec.js'",
+    "lint": "eslint .",
     "test": "jest --config test.json --forceExit",
     "test:watch": "yarn migrate && yarn test --watch --collectCoverage false",
     "test:integration": "yarn migrate && yarn test --collectCoverage false src/__TESTS__/integration",
