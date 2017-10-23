@@ -15,7 +15,7 @@
     "test:integration": "yarn migrate && yarn test --collectCoverage false src/__TESTS__/integration",
     "test:acceptance": "yarn migrate && yarn test --collectCoverage false src/__TESTS__/acceptance",
     "test:unit": "yarn test --testPathIgnorePatterns src/__TESTS__",
-    "dev": "yarn compile && babel-watch -L src/index.js --ignore '**/*.spec.js'",
+    "dev": "yarn migrate && yarn compile && babel-watch -L src/index.js --ignore '**/*.spec.js'",
     "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
     "start": "node build/src/index.js"
   },
