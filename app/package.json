@@ -7,8 +7,8 @@
     "node": ">=8"
   },
   "scripts": {
-    "clear": "rimraf build coverage && mkdir build",
-    "compile": "yarn lint && babel src --quiet --out-dir build --ignore '**/*.spec.js'",
+    "clear": "rimraf dist coverage && mkdir dist",
+    "compile": "yarn lint && babel src --quiet --out-dir dist --ignore '**/*.spec.js'",
     "lint": "eslint .",
     "test": "jest --config test.json --forceExit",
     "test:watch": "yarn migrate && yarn test --watch --collectCoverage false",
@@ -17,7 +17,7 @@
     "test:unit": "yarn test --testPathIgnorePatterns src/__TESTS__",
     "dev": "yarn compile && babel-watch -L src/index.js --ignore '**/*.spec.js'",
     "migrate": "knex migrate:latest --knexfile ./src/db/config.js",
-    "start": "node build/src/index.js"
+    "start": "node dist/src/index.js"
   },
   "dependencies": {
     "bookshelf": "^0.10.4",
