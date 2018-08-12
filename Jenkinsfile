@@ -14,19 +14,21 @@ pipeline {
 
   stages {
     stage('Pull & Build Images') {
-      steps { sh 'docker-compose -f ${COMPOSE_FILE} build --pull' }
+      script {
+        TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
+        APP = "app-${TAG}"
+        INTEGRATION_APP = "app-integration-tests-${TAG}"
+        ACCEPTANCE_APP = "app-acceptance-tests-${TAG}"
+        UNIT_APP = "app-unit-tests-${TAG}"
+        PROJECT_NAME = "article_app_${TAG}"
+      }
+      steps { 
+        sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
+      }
     }
 
     stage('Test') {
       steps {
-        script {
-          TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
-          APP = "app-${TAG}"
-          INTEGRATION_APP = "app-integration-tests-${TAG}"
-          ACCEPTANCE_APP = "app-acceptance-tests-${TAG}"
-          UNIT_APP = "app-unit-tests-${TAG}"
-          PROJECT_NAME = "article_app_${TAG}"
-        }
         parallel(
           "Integration tests": {
             sh 'docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
