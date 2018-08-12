@@ -3,7 +3,6 @@ pipeline {
 
   environment {
     APP = "app-${BUILD_TAG}"
-    PROJECT_NAME = "${article_app_${BUILD_TAG}/\\%2F/-}"
     COMPOSE_FILE = "docker/build/docker-compose.yml"
 
     REL_IMAGE = "chicocode/articles_app"
@@ -16,7 +15,10 @@ pipeline {
 
   stages {
     stage('Pull & Build Images') {
-      steps { sh 'docker-compose -f ${COMPOSE_FILE} build --pull' }
+      steps {
+        sh "PROJECT_NAME=${article_app_${BUILD_TAG}/%2F/-}"
+        sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
+      }
     }
 
     stage('Test') {
