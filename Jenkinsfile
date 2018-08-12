@@ -135,7 +135,7 @@ pipeline {
       when { branch 'release' }
 
       steps {
-        echo 'To deploy just update running containers to version ${version_number}. (don\'t forget to run migrations!)'
+        echo "To deploy just update running containers to version ${version_number}. (don't forget to run migrations!)"
       }
     }
   }
