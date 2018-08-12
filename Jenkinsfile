@@ -14,15 +14,15 @@ pipeline {
 
   stages {
     stage('Pull & Build Images') {
-      script {
-        TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
-        APP = "app-${TAG}"
-        INTEGRATION_APP = "app-integration-tests-${TAG}"
-        ACCEPTANCE_APP = "app-acceptance-tests-${TAG}"
-        UNIT_APP = "app-unit-tests-${TAG}"
-        PROJECT_NAME = "article_app_${TAG}"
-      }
       steps { 
+        script {
+          TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
+          APP = "app-${TAG}"
+          INTEGRATION_APP = "app-integration-tests-${TAG}"
+          ACCEPTANCE_APP = "app-acceptance-tests-${TAG}"
+          UNIT_APP = "app-unit-tests-${TAG}"
+          PROJECT_NAME = "article_app_${TAG}"
+        }
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
       }
     }
