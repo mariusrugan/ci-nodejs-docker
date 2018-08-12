@@ -16,12 +16,12 @@ pipeline {
     stage('Pull & Build Images') {
       steps { 
         script {
-          TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
-          APP = "app-${TAG}"
-          INTEGRATION_APP = "app-integration-tests-${TAG}"
-          ACCEPTANCE_APP = "app-acceptance-tests-${TAG}"
-          UNIT_APP = "app-unit-tests-${TAG}"
-          PROJECT_NAME = "article_app_${TAG}"
+          env.TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
+          env.APP = "app-${TAG}"
+          env.INTEGRATION_APP = "app-integration-tests-${env.TAG}"
+          env.ACCEPTANCE_APP = "app-acceptance-tests-${env.TAG}"
+          env.UNIT_APP = "app-unit-tests-${env.TAG}"
+          env.PROJECT_NAME = "article_app_${env.TAG}"
         }
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
       }
@@ -31,10 +31,10 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} run --name ${TAG} app yarn test:integration --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} run --name ${env.INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
           },
           "Acceptance tests": {
-            sh 'docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} run --name ${TAG} app yarn test:acceptance --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} run --name ${env.ACCEPTANCE_APP} app yarn test:acceptance --testResultsProcessor jest-junit'
           },
           "Unit tests": {
             sh '''
@@ -103,7 +103,7 @@ pipeline {
       steps {
         parallel(
           "Generate Artfacts": {
-            sh "tar -cvzf package-${TAG}.tar.gz package"
+            sh "tar -cvzf package-${env.TAG}.tar.gz package"
             archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
           },
           "Push Distribution Image": {
