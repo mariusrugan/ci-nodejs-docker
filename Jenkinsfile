@@ -16,7 +16,7 @@ pipeline {
   stages {
     stage('Pull & Build Images') {
       steps {
-        sh "PROJECT_NAME=\$(echo ${article_app_${BUILD_TAG} | sed 's/%2F/-//')"
+        sh "PROJECT_NAME=article_app_${BUILD_TAG} | tr -dc '[:alnum:]._-\n\r'"
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
       }
     }
