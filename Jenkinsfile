@@ -85,7 +85,7 @@ pipeline {
           echo "scope: ${env.RELEASE_SCOPE}"
           sh """
               docker run --entrypoint sh --name ${APP} ${BUILD_IMAGE} -c 'yarn compile && yarn version --new-version ${version_number}'
-              docker cp ${APP}:app/build/ ./package
+              docker cp ${APP}:app/dist/ ./package
               docker cp ${APP}:app/package.json ./package/package.json
               docker cp ${APP}:app/yarn.lock ./package/yarn.lock
               cp package/package.json app/package.json
