@@ -5,8 +5,7 @@ import app from '../../../app'
 import supertest from 'supertest'
 
 beforeEach(() =>
-  Bookshelf.knex.raw('TRUNCATE TABLE articles RESTART IDENTITY;')
-)
+  Bookshelf.knex.raw('TRUNCATE TABLE articles RESTART IDENTITY;'))
 
 let articleFactory = attrs => ({
   title: 'title',
