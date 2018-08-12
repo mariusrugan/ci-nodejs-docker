@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'production') PrettyError.start()
 
 const home = new Router()
 home.get('/', async ctx => {
-  ctx.body = `🔥🔥🔥 api up! let's hack! ${manifest.version} 🔥🔥🔥 \n
+  ctx.body = `🔥🔥🔥 api up! let's hack!! ${manifest.version} 🔥🔥🔥 \n
   ${Array(12).join('👾')}`
 })
 
