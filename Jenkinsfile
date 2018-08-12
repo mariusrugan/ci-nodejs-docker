@@ -17,7 +17,7 @@ pipeline {
     stage('Pull & Build Images') {
       steps {
         script {
-          PROJECT_NAME = sh(returnStdout: true, script: "PROJECT_NAME=article_app_${BUILD_TAG} | tr -dc '[:alnum:]._-\n\r'").trim()
+          PROJECT_NAME = sh(returnStdout: true, script: "echo article_app_${BUILD_TAG} | tr -dc '[:alnum:]._-\n\r'").trim()
         }
         sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
       }
