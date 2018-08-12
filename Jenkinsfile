@@ -31,10 +31,10 @@ pipeline {
       steps {
         parallel(
           "Integration tests": {
-            sh 'docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} run --name ${TAG} app yarn test:integration --testResultsProcessor jest-junit'
           },
           "Acceptance tests": {
-            sh 'docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} run --name ${ACCEPTANCE_APP} app yarn test:acceptance --testResultsProcessor jest-junit'
+            sh 'docker-compose -p ${PROJECT_NAME}-acceptance -f ${COMPOSE_FILE} run --name ${TAG} app yarn test:acceptance --testResultsProcessor jest-junit'
           },
           "Unit tests": {
             sh '''
