@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   environment {
-    APP = "app-${BUILD_TAG}"
     COMPOSE_FILE = "docker/build/docker-compose.yml"
 
     REL_IMAGE = "chicocode/articles_app"
@@ -15,22 +14,19 @@ pipeline {
 
   stages {
     stage('Pull & Build Images') {
-      steps {
-        script {
-          PROJECT_NAME = sh(returnStdout: true, script: "echo article_app_${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
-        }
-        sh 'docker-compose -f ${COMPOSE_FILE} build --pull'
-      }
+      steps { sh 'docker-compose -f ${COMPOSE_FILE} build --pull' }
     }
 
     stage('Test') {
-      environment {
-        INTEGRATION_APP = "app-integration-tests-${BUILD_TAG}"
-        ACCEPTANCE_APP = "app-acceptance-tests-${BUILD_TAG}"
-        UNIT_APP = "app-unit-tests-${BUILD_TAG}"
-      }
-
       steps {
+        script {
+          TAG = sh(returnStdout: true, script: "echo ${BUILD_TAG} | tr -dc '[:alnum:].-_\n\r'").trim()
+          APP = "app-${TAG}"
+          INTEGRATION_APP = "app-integration-tests-${TAG}"
+          ACCEPTANCE_APP = "app-acceptance-tests-${TAG}"
+          UNIT_APP = "app-unit-tests-${TAG}"
+          PROJECT_NAME = "article_app_${TAG}"
+        }
         parallel(
           "Integration tests": {
             sh 'docker-compose -p ${PROJECT_NAME}-integration -f ${COMPOSE_FILE} run --name ${INTEGRATION_APP} app yarn test:integration --testResultsProcessor jest-junit'
@@ -105,7 +101,7 @@ pipeline {
       steps {
         parallel(
           "Generate Artfacts": {
-            sh "tar -cvzf package-${BUILD_TAG}.tar.gz package"
+            sh "tar -cvzf package-${TAG}.tar.gz package"
             archiveArtifacts artifacts: '*.tar.gz', fingerprint: true
           },
           "Push Distribution Image": {
