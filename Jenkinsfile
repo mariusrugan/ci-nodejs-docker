@@ -4,12 +4,12 @@ pipeline {
   environment {
     COMPOSE_FILE = "docker/build/docker-compose.yml"
 
-    REL_IMAGE = "chicocode/articles_app"
+    REL_IMAGE = "mariusrugan/articles_app"
     BUILD_IMAGE = "${REL_IMAGE}:build"
 
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
-    REPO = "github.com/chicocode/ci-nodejs-docker.git"
-    GIT_EMAIL = "eu@chicocode.io"
+    REPO = "github.com/mariusrugan/ci-nodejs-docker.git"
+    GIT_EMAIL = "mariusrugan@gmail.com"
   }
 
   stages {
@@ -122,7 +122,7 @@ pipeline {
                 git config --global user.email '${GIT_EMAIL}'
                 git add app/package.json
                 git commit --allow-empty -m 'Unicorn says new release! scope: ${env.RELEASE_SCOPE}'
-                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/chicocode/ci-nodejs-docker.git HEAD:release
+                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/mariusrugan/ci-nodejs-docker.git HEAD:release
               """
             }
           }
