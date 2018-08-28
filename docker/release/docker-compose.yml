@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   app:
-    image: chicocode/articles_app
+    image: mariusrugan/articles_app
     ports:
       - 8090:8081
     deploy:
