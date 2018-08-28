@@ -4,7 +4,7 @@ pipeline {
   environment {
     COMPOSE_FILE = "docker/build/docker-compose.yml"
 
-    REL_IMAGE = "chicocode/articles_app"
+    REL_IMAGE = "mariusrugan/articles_app"
     BUILD_IMAGE = "${REL_IMAGE}:build"
 
     DOCKER_DISTRIBUTION = "https://registry.hub.docker.com"
